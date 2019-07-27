@@ -56,7 +56,6 @@ public class Player {
         this.gamePlayers.add(gamePlayer);
     }
 
-
     @JsonIgnore
     public List<GamePlayer> getGamePlayers() {
         return gamePlayers;

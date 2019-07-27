@@ -38,7 +38,7 @@ public class GamePlayer {
 
     public GamePlayer() {}
 
-    public GamePlayer(Game game,Player player, LocalDateTime joinDate){
+    public GamePlayer(Game game, Player player, LocalDateTime joinDate){
         this.game = game;
         this.player = player;
         this.joinDate = joinDate;
@@ -66,9 +66,5 @@ public class GamePlayer {
 
     public LocalDateTime getjoinDate() {
         return joinDate;
-    }
-
-    public void setjoinDate() {
-        this.joinDate = joinDate;
     }
 }
