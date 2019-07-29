@@ -27,12 +27,10 @@ public class GamePlayer {
     @JoinColumn(name = "player_id")
     private Player player;
 
-    /*
     @JsonIgnore
     @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Ship> ships = new ArrayList<>();
-    */
 
     private LocalDateTime joinDate;
 
@@ -66,5 +64,14 @@ public class GamePlayer {
 
     public LocalDateTime getjoinDate() {
         return joinDate;
+    }
+
+    public List<Ship> getShips() {
+        return ships;
+    }
+
+    public void addShip(Ship ship) {
+        ship.setGamePlayer(this);
+        this.ships.add(ship);
     }
 }

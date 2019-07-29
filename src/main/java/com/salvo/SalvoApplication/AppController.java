@@ -14,4 +14,7 @@ public class AppController {
 
     @Autowired
     private GamePlayerRepository gamePlayerRepository;
+
+    @Autowired
+    private ShipRepository shipRepository;
 }
