@@ -69,12 +69,52 @@ public class SalvoController {
         dtoGame.put("idGame", game.getId());
         dtoGame.put("creationDate", game.getCreationDate());
         dtoGame.put("gamePlayers", getGamePlayersList(game.getGamePlayers()));
-        //dtoGame.put("ships", getLocationShips(gamePlayer.getShips()));
+        dtoGame.put("ships", getLocationShips(gamePlayer.getShips()));
         return dtoGame;
     }
 
-    @RequestMapping("/ships_view")
-    public List<Map<String, Object>> getShips() {
-
-    }
+    private List<Map<String, Object>> getGamePlayers(List<GamePlayer> gamePlayers) {		
+        return gamePlayers
+            .stream()
+            .map(gamePlayer -> gamePlayerToDTO(gamePlayer))
+            .collect(Collectors.toList());
+    } 
+    
+    private Map<String, Object> gamePlayerToDTO(GamePlayer gamePlayer) {		
+		Map<String, Object> dtoGamePlayer = new LinkedHashMap<String, Object>();		
+		dtoGamePlayer.put("idGamePlayer", gamePlayer.getId());
+		dtoGamePlayer.put("player", playerToDTO(gamePlayer.getPlayer()));
+		dtoGamePlayer.put("joinDate", gamePlayer.getJoinDate());
+		return dtoGamePlayer;
+	}
+		
+	private Map<String, Object> playerToDTO(Player player) {		
+		Map<String, Object> dtoPlayer = new LinkedHashMap<String, Object>();
+		dtoPlayer.put("idPlayer", player.getId());
+		dtoPlayer.put("email", player.getUserName());
+		return dtoPlayer;
+	}
+	
+	private List<Map<String, Object>> getLocationShips(List<Ship> ships){
+        return ships
+            .stream()
+			.map(ship -> shipToDTO(ship))
+			.collect(Collectors.toList());		
+	}
+	
+	private Map<String, Object> shipToDTO(Ship ship){
+		
+		Map<String, Object> dtoShip = new LinkedHashMap<String, Object>();
+		dtoShip.put("shipType", ship.getShipType());
+		dtoShip.put("locations", ship.getShipLocations());
+		return dtoShip;
+	}
+	
+	@RequestMapping("/ships_view")
+	public List<Map<String, Object>> getShips(){
+		return shipRepository.findAll()
+				.stream()
+				.map(ship -> shipToDTO(ship))
+				.collect(Collectors.toList());
+	}
 }

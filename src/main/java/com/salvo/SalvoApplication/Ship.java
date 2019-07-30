@@ -41,7 +41,7 @@ public class Ship {
         return shipType;
     }
 
-    public void setShipType(String sipThype) {
+    public void setShipType(String sipType) {
         this.shipType = shipType;
     }
 

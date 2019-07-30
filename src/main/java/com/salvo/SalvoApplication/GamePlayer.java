@@ -62,7 +62,7 @@ public class GamePlayer {
         return id;
     }
 
-    public LocalDateTime getjoinDate() {
+    public LocalDateTime getJoinDate() {
         return joinDate;
     }
 
