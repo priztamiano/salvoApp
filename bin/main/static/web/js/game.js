@@ -1,25 +1,30 @@
 $(function() {
-    loadData()
+  loadData();
 });
 
-function updateView(data) {
-    var htmlList = data.map(function (games) {
-            return  '<li>' + 
-							new Date(games.creationDate).toLocaleString() + ' ' 
-							+ games.gamePlayers.map(function(p) { return p.player.email}).join(',')  
-							+'</li>';
-    }).join('');
-  document.getElementById("game-list").innerHTML = htmlList;
-}
+function getParameterByName(name) {
+  var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+  return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+};
 
-// load and display JSON sent by server for /players
+function loadData(){
+  $.get('/api/game_view/'+getParameterByName('gp'))
+      .done(function(data) {
+          let playerInfo;
+          if(data.gamePlayers[0].id == getParameterByName('gp'))
+              playerInfo = [data.gamePlayers[0].player.email,data.gamePlayers[1].player.email];
+          else
+              playerInfo = [data.gamePlayers[1].player.email,data.gamePlayers[0].player.email];
 
-function loadData() {
-    $.get("/api/games")
-        .done(function(data) {
-          updateView(data);
-        })
-        .fail(function( jqXHR, textStatus ) {
-          alert( "Failed: " + textStatus );
-        });
-}
+          $('#playerInfo').text(playerInfo[0] + '(you) vs ' + playerInfo[1]);
+
+          data.ships.forEach(function(shipPiece){
+              shipPiece.locations.forEach(function(shipLocation){
+                  $('#'+shipLocation).addClass('ship-piece');
+              })
+          });
+      })
+      .fail(function( jqXHR, textStatus ) {
+        alert( "Failed: " + textStatus );
+      });
+};

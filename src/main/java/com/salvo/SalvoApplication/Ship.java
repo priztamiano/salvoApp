@@ -41,7 +41,7 @@ public class Ship {
         return shipType;
     }
 
-    public void setShipType(String sipType) {
+    public void setShipType(String shipType) {
         this.shipType = shipType;
     }
 
@@ -53,7 +53,11 @@ public class Ship {
         this.shipLocations = shipLocations;
     }
 
-    public GamePlayer setGamePlayer(GamePlayer gamePlayer) {
+    public GamePlayer getGamePlayer() {
         return gamePlayer;
+    }
+
+    public void setGamePlayer(GamePlayer gamePlayer) {
+        this.gamePlayer = gamePlayer;
     }
 }

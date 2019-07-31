@@ -6,9 +6,6 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import static java.util.stream.Collectors.toList;
-
 
 @Entity
 public class Player {
@@ -20,6 +17,11 @@ public class Player {
     @JsonIgnore
     @OneToMany(mappedBy = "player", fetch=FetchType.EAGER)
     List<GamePlayer> gamePlayers = new ArrayList<>();
+
+    @JsonIgnore
+    public List<GamePlayer> getGamePlayers() {
+        return gamePlayers;
+    }
 
     private String userName;
     private String password;
@@ -55,11 +57,4 @@ public class Player {
         gamePlayer.setPlayer(this);
         this.gamePlayers.add(gamePlayer);
     }
-
-    @JsonIgnore
-    public List<GamePlayer> getGamePlayers() {
-        return gamePlayers;
-    }
-
-
 }

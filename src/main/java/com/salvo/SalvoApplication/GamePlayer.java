@@ -6,7 +6,6 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +30,10 @@ public class GamePlayer {
     @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Ship> ships = new ArrayList<>();
+
+    public List<Ship> getShips() {
+        return ships;
+    }
 
     private LocalDateTime joinDate;
 
@@ -64,10 +67,6 @@ public class GamePlayer {
 
     public LocalDateTime getJoinDate() {
         return joinDate;
-    }
-
-    public List<Ship> getShips() {
-        return ships;
     }
 
     public void addShip(Ship ship) {

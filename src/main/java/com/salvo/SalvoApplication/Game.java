@@ -6,8 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import static java.util.stream.Collectors.toList;
+
 
 @Entity // Genera una tabla para esta clase
 public class Game {
@@ -47,6 +46,6 @@ public class Game {
     @JsonIgnore
 	public List<GamePlayer> getGamePlayers(){
 		return gamePlayers;
-	}
-
+    }
+    
 }
