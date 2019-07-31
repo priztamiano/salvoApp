@@ -35,6 +35,13 @@ public class GamePlayer {
         return ships;
     }
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<Salvo> salvoes = new ArrayList<>();
+
+    public List<Salvo> getSalvoes() {return salvoes;}
+
     private LocalDateTime joinDate;
 
     public GamePlayer() {}
@@ -42,6 +49,7 @@ public class GamePlayer {
     public GamePlayer(Game game, Player player){
         this.game = game;
         this.player = player;
+        this.joinDate = LocalDateTime.now();
     }
 
     public Game getGame() {
@@ -72,4 +80,9 @@ public class GamePlayer {
         ship.setGamePlayer(this);
         this.ships.add(ship);
     }
+
+    //public void addSalvo(Salvo salvo) {
+    //    salvo.getGamePlayer(this);
+    //    this.salvoes.add((salvo));
+    //}
 }

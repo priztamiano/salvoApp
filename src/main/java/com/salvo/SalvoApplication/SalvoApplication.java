@@ -19,7 +19,8 @@ public class SalvoApplication {
 	public CommandLineRunner initData(PlayerRepository playerRepository,
 									  GameRepository gameRepository,
 									  GamePlayerRepository gamePlayerRepository,
-									  ShipRepository shipRepository) {
+									  ShipRepository shipRepository,
+									  SalvoRepository salvoRepository) {
 		return(String... args) -> {
 			Game game1 = new Game();
 			LocalDateTime date1 = LocalDateTime.now();
@@ -86,6 +87,44 @@ public class SalvoApplication {
 			gamePlayer2.addShip(ship3);
 			gamePlayer2.addShip(ship4);
 
+			List<String> salvoLocation1 = new ArrayList<>();
+			salvoLocation1.add("A4");
+			salvoLocation1.add("A5");
+			salvoLocation1.add("A6");
+
+			List<String> salvoLocation2 = new ArrayList<>();
+			salvoLocation2.add("A1");
+			salvoLocation2.add("B1");
+			salvoLocation2.add("C1");
+			salvoLocation2.add("D1");
+
+			List<String> salvoLocation3 = new ArrayList<>();
+			salvoLocation3.add("C6");
+			salvoLocation3.add("C7");
+
+			List<String> salvoLocation4 = new ArrayList<>();
+			salvoLocation4.add("D2");
+			salvoLocation4.add("E2");
+			salvoLocation4.add("F2");
+
+			Salvo salvo1 = new Salvo();
+			salvo1.setTurn(1);
+			//salvo1.setTurn(2);
+			//salvo1.setTurn(3);
+			salvo1.setSalvoLocations(salvoLocation1);
+
+			Salvo salvo2 = new Salvo();
+			//salvo2.setTurn(1);
+			salvo2.setTurn(2);
+			//salvo2.setTurn(3);
+			salvo2.setSalvoLocations(salvoLocation2);
+
+			Salvo salvo3 = new Salvo();
+			//salvo3.setTurn(1);
+			//salvo3.setTurn(2);
+			salvo3.setTurn(3);
+			salvo3.setSalvoLocations(salvoLocation3);
+
 			gameRepository.save(game1);
 			gameRepository.save(game2);
 			gameRepository.save(game3);
@@ -104,6 +143,11 @@ public class SalvoApplication {
 			shipRepository.save(ship2);
 			shipRepository.save(ship3);
 			shipRepository.save(ship4);
+
+			salvoRepository.save(salvo1);
+			salvoRepository.save(salvo2);
+			salvoRepository.save(salvo3);
+			//salvoRepository.save(salvo4);
 
 		};
 	}

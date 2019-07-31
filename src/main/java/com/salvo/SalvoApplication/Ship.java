@@ -25,7 +25,6 @@ public class Ship {
     @Column(name = "shipLocation")
     private List<String> shipLocations = new ArrayList<>();
 
-
     public Ship() {  }
 
     public long getId() {

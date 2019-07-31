@@ -6,10 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,6 +21,9 @@ public class SalvoController {
 
     @Autowired
     private ShipRepository shipRepository;
+
+    @Autowired
+    private SalvoRepository salvoRepository;
 
     // Endpoint /api/games 
     @RequestMapping("/games")
@@ -56,7 +56,7 @@ public class SalvoController {
     private Map<String, Object> gameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<>(); // Instancia de Map vacía
         dto.put("id", game.getId());
-        dto.put("creationDate", Date.from(game.getCreationDate().atZone(ZoneId.systemDefault()).toInstant()));
+        dto.put("creationDate", Date.from(game.getCreationDate().atZone(ZoneId.systemDefault()).toInstant())); // Método que convierte LocalDateTime a Date
         dto.put("players", getGamePlayersList(game.getGamePlayers()));
         return dto;
     }
@@ -66,7 +66,7 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", gamePlayer.getId());
         dto.put("player", gamePlayer.getPlayer().getUserName());
-        //dto.put("joinDate", gamePlayer.getJoinDate());
+        dto.put("joinDate", gamePlayer.getJoinDate());
         return dto;
     }
     
@@ -84,6 +84,8 @@ public class SalvoController {
         dtoGame.put("creationDate", game.getCreationDate());
         dtoGame.put("gamePlayers", getGamePlayersList(game.getGamePlayers()));
         dtoGame.put("ships", getShipLocation(gamePlayer.getShips()));
+        dtoGame.put("salvoes", getAllSalvoes(game));
+        //dtoGame.put("salvoes", getSalvoLocation(gamePlayer.getSalvoes()));
         return dtoGame;
     }
 
@@ -109,5 +111,28 @@ public class SalvoController {
 		dtoShip.put("locations", ship.getShipLocations());
         return dtoShip;
     }
- 
+
+    // Se genera una lista de todos los Salvoes
+    private List<Map<String, Object>> getAllSalvoes(Game game) {
+        List<Map<String, Object>> salvoesList = new ArrayList<>();
+        game.getGamePlayers().forEach(gamePlayer -> salvoesList.addAll(getSalvoLocation(gamePlayer.getSalvoes())));
+        return salvoesList;
+    }
+
+    // Se genera una lista de salvoLocations
+    private List<Map<String, Object>> getSalvoLocation(List<Salvo> salvoList) {
+        return salvoList.stream()
+                    .map(salvo -> salvoDTO(salvo))
+                    .collect(Collectors.toList());
+    }
+
+    // Se mapea Salvo para mostrar sus atributos
+    private Map<String, Object> salvoDTO(Salvo salvo) {
+        Map<String, Object> salvoDTO = new LinkedHashMap<>();
+        salvoDTO.put("salvoLocation", salvo.getSalvoLocations());
+        salvoDTO.put("turn", salvo.getTurn());
+        salvoDTO.put("playerId", salvo.getGamePlayer().getId());
+        return salvoDTO;
+    }
+
 }
