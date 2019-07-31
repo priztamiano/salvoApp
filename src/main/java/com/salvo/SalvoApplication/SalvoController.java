@@ -20,9 +20,6 @@ public class SalvoController {
     private GameRepository gameRepository;
 
     @Autowired
-    private PlayerRepository playerRepository;
-
-    @Autowired
     private GamePlayerRepository gamePlayerRepository;
 
     @Autowired
@@ -69,16 +66,15 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", gamePlayer.getId());
         dto.put("player", gamePlayer.getPlayer().getUserName());
-        dto.put("joinDate", gamePlayer.getJoinDate());
+        //dto.put("joinDate", gamePlayer.getJoinDate());
         return dto;
     }
     
     // Se genera una lista de Game Players y se la mapea para convertir en DTO
     private List<Object> getGamePlayersList(List<GamePlayer> gamePlayers) {
-        return gamePlayers
-                .stream()
-                .map(gamePlayer -> gamePlayersDTO(gamePlayer))
-                .collect(Collectors.toList());
+        return gamePlayers.stream()
+                        .map(gamePlayer -> gamePlayersDTO(gamePlayer))
+                        .collect(Collectors.toList());
     }
 
     // Se genera un mapa del Game View que muestre los datos de una partida
@@ -91,12 +87,19 @@ public class SalvoController {
         return dtoGame;
     }
 
+    // Mapeo los Players
+    private Map<String, Object> playerDTO(Player player) {
+        Map<String, Object> playerDTO = new LinkedHashMap<>();
+        playerDTO.put("id", player.getId());
+        playerDTO.put("userName", player.getUserName());
+        return playerDTO;
+    }
+
     // Se genera una lista mapeando Ship
 	private List<Map<String, Object>> getShipLocation(List<Ship> ships){
-        return ships
-            .stream()
-			.map(ship -> shipDTO(ship))
-			.collect(Collectors.toList());		
+        return ships.stream()
+			        .map(ship -> shipDTO(ship))
+			        .collect(Collectors.toList());		
 	}
     
     // Se mapea Ship para mostrar su type y locaciones

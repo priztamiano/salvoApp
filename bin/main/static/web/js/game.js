@@ -12,9 +12,9 @@ function loadData(){
       .done(function(data) {
           let playerInfo;
           if(data.gamePlayers[0].id == getParameterByName('gp'))
-              playerInfo = [data.gamePlayers[0].player.email,data.gamePlayers[1].player.email];
+              playerInfo = [data.gamePlayers[0].player, data.gamePlayers[1].player];
           else
-              playerInfo = [data.gamePlayers[1].player.email,data.gamePlayers[0].player.email];
+              playerInfo = [data.gamePlayers[1].player, data.gamePlayers[0].player];
 
           $('#playerInfo').text(playerInfo[0] + '(you) vs ' + playerInfo[1]);
 
