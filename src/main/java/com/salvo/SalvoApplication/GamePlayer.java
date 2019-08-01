@@ -40,7 +40,7 @@ public class GamePlayer {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Salvo> salvoes = new ArrayList<>();
 
-    public List<Salvo> getSalvoes() {return salvoes;}
+    public List<Salvo> getSalvo() {return salvoes;}
 
     private LocalDateTime joinDate;
 
@@ -81,8 +81,8 @@ public class GamePlayer {
         this.ships.add(ship);
     }
 
-    //public void addSalvo(Salvo salvo) {
-    //    salvo.getGamePlayer(this);
-    //    this.salvoes.add((salvo));
-    //}
+    public void addSalvo(Salvo salvo) {
+        salvo.setGamePlayer(this);
+        this.salvoes.add((salvo));
+    }
 }

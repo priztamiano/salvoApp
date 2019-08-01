@@ -65,7 +65,7 @@ public class SalvoController {
     private Map<String, Object> gamePlayersDTO(GamePlayer gamePlayer) {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", gamePlayer.getId());
-        dto.put("player", gamePlayer.getPlayer().getUserName());
+        dto.put("player", gamePlayer.getPlayer());
         dto.put("joinDate", gamePlayer.getJoinDate());
         return dto;
     }
@@ -84,15 +84,14 @@ public class SalvoController {
         dtoGame.put("creationDate", game.getCreationDate());
         dtoGame.put("gamePlayers", getGamePlayersList(game.getGamePlayers()));
         dtoGame.put("ships", getShipLocation(gamePlayer.getShips()));
-        dtoGame.put("salvoes", getAllSalvoes(game));
-        //dtoGame.put("salvoes", getSalvoLocation(gamePlayer.getSalvoes()));
+        dtoGame.put("salvoes", getAllSalvo(game));
         return dtoGame;
     }
 
     // Mapeo los Players
     private Map<String, Object> playerDTO(Player player) {
         Map<String, Object> playerDTO = new LinkedHashMap<>();
-        playerDTO.put("id", player.getId());
+        playerDTO.put("idPlayer", player.getId());
         playerDTO.put("userName", player.getUserName());
         return playerDTO;
     }
@@ -113,10 +112,10 @@ public class SalvoController {
     }
 
     // Se genera una lista de todos los Salvoes
-    private List<Map<String, Object>> getAllSalvoes(Game game) {
-        List<Map<String, Object>> salvoesList = new ArrayList<>();
-        game.getGamePlayers().forEach(gamePlayer -> salvoesList.addAll(getSalvoLocation(gamePlayer.getSalvoes())));
-        return salvoesList;
+    private List<Map<String, Object>> getAllSalvo(Game game) {
+        List<Map<String, Object>> salvoList = new ArrayList<>();
+        game.getGamePlayers().forEach(gamePlayer -> salvoList.addAll(getSalvoLocation(gamePlayer.getSalvo())));
+        return salvoList;
     }
 
     // Se genera una lista de salvoLocations
@@ -129,9 +128,9 @@ public class SalvoController {
     // Se mapea Salvo para mostrar sus atributos
     private Map<String, Object> salvoDTO(Salvo salvo) {
         Map<String, Object> salvoDTO = new LinkedHashMap<>();
-        salvoDTO.put("salvoLocation", salvo.getSalvoLocations());
+        salvoDTO.put("player", salvo.getGamePlayer().getId());
         salvoDTO.put("turn", salvo.getTurn());
-        salvoDTO.put("playerId", salvo.getGamePlayer().getId());
+        salvoDTO.put("locations", salvo.getSalvoLocations());
         return salvoDTO;
     }
 

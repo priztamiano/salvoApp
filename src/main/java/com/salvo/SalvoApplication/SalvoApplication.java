@@ -109,21 +109,18 @@ public class SalvoApplication {
 
 			Salvo salvo1 = new Salvo();
 			salvo1.setTurn(1);
-			//salvo1.setTurn(2);
-			//salvo1.setTurn(3);
 			salvo1.setSalvoLocations(salvoLocation1);
 
 			Salvo salvo2 = new Salvo();
-			//salvo2.setTurn(1);
 			salvo2.setTurn(2);
-			//salvo2.setTurn(3);
 			salvo2.setSalvoLocations(salvoLocation2);
 
 			Salvo salvo3 = new Salvo();
-			//salvo3.setTurn(1);
-			//salvo3.setTurn(2);
 			salvo3.setTurn(3);
 			salvo3.setSalvoLocations(salvoLocation3);
+
+			gamePlayer1.addSalvo(salvo1);
+			gamePlayer2.addSalvo(salvo2);
 
 			gameRepository.save(game1);
 			gameRepository.save(game2);
