@@ -23,6 +23,17 @@ public class Player {
         return gamePlayers;
     }
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
+    List<Score> scores = new ArrayList<>();
+
+    @JsonIgnore
+    public List<Score> getScores() { return scores; }
+
+    public void setScores(Game game) {
+        this.scores = scores;
+    }
+
     private String userName;
     private String password;
 

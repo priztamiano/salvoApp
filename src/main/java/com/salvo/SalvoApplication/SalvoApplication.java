@@ -20,8 +20,10 @@ public class SalvoApplication {
 									  GameRepository gameRepository,
 									  GamePlayerRepository gamePlayerRepository,
 									  ShipRepository shipRepository,
-									  SalvoRepository salvoRepository) {
+									  SalvoRepository salvoRepository,
+									  ScoreRepository scoreRepository) {
 		return(String... args) -> {
+			// Instancias de Game con su info correspondiente
 			Game game1 = new Game();
 			LocalDateTime date1 = LocalDateTime.now();
 			game1.setCreationDate(date1);
@@ -34,11 +36,13 @@ public class SalvoApplication {
 			LocalDateTime date3 = LocalDateTime.now().plusHours(2);
 			game1.setCreationDate(date3);
 
+			// Instancias de Player
 			Player player1 = new Player("sarasa@outlook.com", "loremIpsum234");
 			Player player2 = new Player("priz@gmail.com", "kittenS0123");
 			Player player3 = new Player("12345@gmail.com", "666");
 			Player player4 = new Player("6789@gmail.com", "333");
 
+			// Instancias de GamePlayer
 			GamePlayer gamePlayer1 = new GamePlayer(game1, player1);
 			GamePlayer gamePlayer2 = new GamePlayer(game1, player2);
 			GamePlayer gamePlayer3 = new GamePlayer(game2, player3);
@@ -62,10 +66,12 @@ public class SalvoApplication {
 			location3.add("C3");
 			location3.add("C4");
 
+			// Asignación de ShipTypes
 			String shipType1 = "Submarine";
 			String shipType2 = "Boat";
 			String shipType3 = "Other Ship";
 
+			// Instancias de Ship
 			Ship ship1 = new Ship();
 			ship1.setShipLocations(location1);
 			ship1.setShipType(shipType1);
@@ -82,11 +88,13 @@ public class SalvoApplication {
 			ship4.setShipLocations(location1);
 			ship4.setShipType(shipType2);
 
+			// Asignación de Ship para cada gamePlayer
 			gamePlayer1.addShip(ship1);
 			gamePlayer1.addShip(ship2);
 			gamePlayer2.addShip(ship3);
 			gamePlayer2.addShip(ship4);
 
+			// Asignación de Locaciones Salvo
 			List<String> salvoLocation1 = new ArrayList<>();
 			salvoLocation1.add("A4");
 			salvoLocation1.add("A5");
@@ -107,6 +115,7 @@ public class SalvoApplication {
 			salvoLocation4.add("E2");
 			salvoLocation4.add("F2");
 
+			// Instancias de Salvo
 			Salvo salvo1 = new Salvo();
 			salvo1.setTurn(1);
 			salvo1.setSalvoLocations(salvoLocation1);
@@ -119,9 +128,38 @@ public class SalvoApplication {
 			salvo3.setTurn(3);
 			salvo3.setSalvoLocations(salvoLocation3);
 
-			gamePlayer1.addSalvo(salvo1);
-			gamePlayer2.addSalvo(salvo2);
+			Salvo salvo4 = new Salvo();
+			salvo4.setTurn(4);
+			salvo4.setSalvoLocations(salvoLocation4);
 
+			// Asignación de Salvo a cada gamePlayer
+			gamePlayer1.addSalvo(salvo1);
+			gamePlayer1.addSalvo(salvo3);
+			gamePlayer2.addSalvo(salvo2);
+			gamePlayer2.addSalvo(salvo4);
+
+			// Instancias de Score
+			Score score1 = new Score();
+			score1.setGame(game1);
+			score1.setPlayer(player1);
+			score1.setScore(1.0);
+
+			Score score2 = new Score();
+			score2.setGame(game1);
+			score2.setPlayer(player2);
+			score2.setScore(1);
+
+			Score score3 = new Score();
+			score3.setGame(game2);
+			score3.setPlayer(player3);
+			score3.setScore(0.5);
+
+			Score score4 = new Score();
+			score4.setGame(game2);
+			score4.setPlayer(player4);
+			score4.setScore(0);
+
+			// Guardado de cada Instancia a su respectivo Repository
 			gameRepository.save(game1);
 			gameRepository.save(game2);
 			gameRepository.save(game3);
@@ -144,8 +182,12 @@ public class SalvoApplication {
 			salvoRepository.save(salvo1);
 			salvoRepository.save(salvo2);
 			salvoRepository.save(salvo3);
-			//salvoRepository.save(salvo4);
+			salvoRepository.save(salvo4);
 
+			scoreRepository.save(score1);
+			scoreRepository.save(score2);
+			scoreRepository.save(score3);
+			scoreRepository.save(score4);
 		};
 	}
 

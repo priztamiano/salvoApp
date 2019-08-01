@@ -25,6 +25,9 @@ public class SalvoController {
     @Autowired
     private SalvoRepository salvoRepository;
 
+    @Autowired
+    private ScoreRepository scoreRepositry;
+
     // Endpoint /api/games 
     @RequestMapping("/games")
     public List<Object> getAll() {
@@ -66,7 +69,7 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", gamePlayer.getId());
         dto.put("player", gamePlayer.getPlayer());
-        dto.put("joinDate", gamePlayer.getJoinDate());
+        dto.put("joinDate", Date.from(gamePlayer.getJoinDate().atZone(ZoneId.systemDefault()).toInstant()));
         return dto;
     }
     
@@ -128,10 +131,17 @@ public class SalvoController {
     // Se mapea Salvo para mostrar sus atributos
     private Map<String, Object> salvoDTO(Salvo salvo) {
         Map<String, Object> salvoDTO = new LinkedHashMap<>();
-        salvoDTO.put("player", salvo.getGamePlayer().getId());
+        salvoDTO.put("player", salvo.getGamePlayer().getPlayer().getId());
         salvoDTO.put("turn", salvo.getTurn());
         salvoDTO.put("locations", salvo.getSalvoLocations());
         return salvoDTO;
     }
 
+    /*
+    // Mapeo Score
+    private Map<String, Object> scoreDTO(Score score) {
+        Map<String, Object> scoreDTO = new LinkedHashMap<>();
+        scoreDTO.put("score", )
+    }
+    */
 }

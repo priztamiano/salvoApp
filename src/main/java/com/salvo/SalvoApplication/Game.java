@@ -18,9 +18,25 @@ public class Game {
 
     private LocalDateTime creationDate;
 
-    @JsonIgnore // Para el loop infinito
-    @OneToMany(mappedBy = "game", fetch=FetchType.EAGER)
+    @JsonIgnore // Detiene el loop infinito que se genera con List
+    @OneToMany(mappedBy = "game", fetch= FetchType.EAGER)
     List<GamePlayer> gamePlayers = new ArrayList<>();
+
+    @JsonIgnore
+    public List<GamePlayer> getGamePlayers(){
+        return gamePlayers;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
+    List<Score> scores = new ArrayList<>();
+
+    @JsonIgnore
+    public List<Score> getScores() { return scores; }
+
+    public void setScores() {
+        this.scores = scores;
+    }
 
     public Game() {
         this.creationDate =  LocalDateTime.now();
@@ -42,10 +58,4 @@ public class Game {
         gamePlayer.setGame(this);
         this.gamePlayers.add(gamePlayer);
     }
-
-    @JsonIgnore
-	public List<GamePlayer> getGamePlayers(){
-		return gamePlayers;
-    }
-    
 }
