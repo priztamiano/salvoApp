@@ -60,10 +60,6 @@ public class Score {
         return score;
     }
 
-    public void setFinishDate(LocalDateTime finishDate) {
-        this.finishDate = finishDate;
-    }
-
     public LocalDateTime getFinishDate() {
         return finishDate;
     }
