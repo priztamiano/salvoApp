@@ -143,6 +143,7 @@ public class SalvoApplication {
 			score1.setGame(game1);
 			score1.setPlayer(player1);
 			score1.setScore(1.0);
+			score1.setScore(0.5);
 
 			Score score2 = new Score();
 			score2.setGame(game1);

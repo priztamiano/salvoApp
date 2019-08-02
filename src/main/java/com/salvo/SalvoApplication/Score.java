@@ -3,6 +3,7 @@ package com.salvo.SalvoApplication;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Score {
@@ -20,13 +21,15 @@ public class Score {
     private Game game;
 
     private double score;
+    private LocalDateTime finishDate;
 
     public Score() { }
 
-    public Score(Game game, Player player, double score) {
+    public Score(Game game, Player player, double score, LocalDateTime finishDate) {
         this.game = game;
         this.player = player;
         this.score = score;
+        this.finishDate = LocalDateTime.now();
     }
 
     public long getId() {
@@ -56,4 +59,15 @@ public class Score {
     public double getScore() {
         return score;
     }
+
+    public void setFinishDate(LocalDateTime finishDate) {
+        this.finishDate = finishDate;
+    }
+
+    public LocalDateTime getFinishDate() {
+        return finishDate;
+    }
+
+
+
 }

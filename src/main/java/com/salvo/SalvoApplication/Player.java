@@ -37,6 +37,13 @@ public class Player {
     private String userName;
     private String password;
 
+    /* Atributos Score
+    private double totalScore;
+    private double totalWins;
+    private double totalLosses;
+    private double totalTies;
+    */
+
     public Player() {   }
 
     public Player(String userName, String password){
@@ -68,4 +75,5 @@ public class Player {
         gamePlayer.setPlayer(this);
         this.gamePlayers.add(gamePlayer);
     }
+
 }
