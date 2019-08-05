@@ -213,5 +213,4 @@ public class SalvoController {
         totalScore = getWins(player) + getLosses(player) + getTies(player);
         return totalScore;
     }
-
 }
