@@ -37,13 +37,6 @@ public class Player {
     private String userName;
     private String password;
 
-    /* Atributos Score
-    private double totalScore;
-    private double totalWins;
-    private double totalLosses;
-    private double totalTies;
-    */
-
     public Player() {   }
 
     public Player(String userName, String password){
@@ -74,6 +67,31 @@ public class Player {
     public void addGamePlayer(GamePlayer gamePlayer) {
         gamePlayer.setPlayer(this);
         this.gamePlayers.add(gamePlayer);
+    }
+
+    ///////////// MÉTODOS SCORE
+    /*public double getWon() {
+
+    }
+
+    public double getLost() {
+
+    }
+
+    public double getTied() {
+
+    }
+    */
+
+    public double getTotalScore() {
+        double totalScore;
+
+        double won = 1;
+        double lost = 0;
+        double tied = 0.5;
+
+        totalScore = won + lost + tied;
+        return totalScore;
     }
 
 }

@@ -1,9 +1,25 @@
 package com.salvo.SalvoApplication;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,10 +134,16 @@ public class SalvoApplication {
 
 			// Instancias de Score
 			Score score1 = new Score(game1, player1, 1.0, LocalDateTime.now());
-			Score score2 = new Score(game1, player2, 1.0, LocalDateTime.now());
-			Score score3 = new Score(game2, player3, 0.5, LocalDateTime.now());
-			Score score4 = new Score(game2, player4, 0, LocalDateTime.now());
-			
+			Score score2 = new Score(game1, player1, 1.0, LocalDateTime.now());
+			Score score3 = new Score(game1, player2, 0.5, LocalDateTime.now());
+			Score score4 = new Score(game1, player2, 0, LocalDateTime.now());
+			Score score5 = new Score(game2, player3, 0.5, LocalDateTime.now());
+			Score score6 = new Score(game2, player3, 0.0, LocalDateTime.now());
+			Score score7 = new Score(game2, player4, 1, LocalDateTime.now());
+			Score score8 = new Score(game2, player4, 0.5, LocalDateTime.now());
+
+
+
 			// Guardado de cada Instancia a su respectivo Repository
 			gameRepository.save(game1);
 			gameRepository.save(game2);
@@ -151,7 +173,68 @@ public class SalvoApplication {
 			scoreRepository.save(score2);
 			scoreRepository.save(score3);
 			scoreRepository.save(score4);
+			scoreRepository.save(score5);
+			scoreRepository.save(score6);
+			scoreRepository.save(score7);
+			scoreRepository.save(score8);
 		};
 	}
 
+}
+
+@Configuration
+class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+
+	@Autowired
+	PlayerRepository playerRepository;
+
+	@Override
+	public void init(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(inputName-> {
+			Player player = playerRepository.findByUserName(inputName);
+			if (player != null) {
+				return new User(player.getUserName(), player.getPassword(),
+						AuthorityUtils.createAuthorityList("USER"));
+			} else {
+				throw new UsernameNotFoundException("Unknown user: " + inputName);
+			}
+		});
+	}
+}
+
+@EnableWebSecurity
+@Configuration
+class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests()
+				.antMatchers("/web/games.html").permitAll()
+				.antMatchers("/web/css/games.css").permitAll()
+				.antMatchers("/api/games").permitAll()
+				.antMatchers("/api/players").permitAll()
+				.antMatchers("/api/game_view/*").hasAuthority("user")
+				.antMatchers("/rest/*").permitAll()
+				.anyRequest().permitAll();
+		http.formLogin()
+				.usernameParameter("userName")
+				.passwordParameter("password")
+				.loginPage("/api/login");
+		http.logout().logoutUrl("/api/logout");
+		// turn off checking for CSRF tokens
+		http.csrf().disable();
+		// if user is not authenticated, just send an authentication failure response
+		http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+		// if login is successful, just clear the flags asking for authentication
+		http.formLogin().successHandler((req, res, auth) -> clearAuthenticationAttributes(req));
+		// if login fails, just send an authentication failure response
+		http.formLogin().failureHandler((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+		// if logout is successful, just send a success response
+		http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
+	}
+	private void clearAuthenticationAttributes(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+		}
+	}
 }

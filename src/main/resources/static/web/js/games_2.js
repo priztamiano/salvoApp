@@ -1,25 +1,22 @@
 $(function() {
     loadData()
 });
-
 function updateViewGames(data) {
-  var htmlList = data.games.map(function (games) {
-      return  '<li class="list-group-item">' + new Date(games.creationDate).toLocaleString() + ' ' + games.gamePlayers.map(function(p) { return p.player.userName}).join(', ')  +'</li>';
+  var htmlList = data.map(function (game) {
+      return  '<li class="list-group-item">' + new Date(game.date).toLocaleString() + ' ' + game.players.map(function(p) { return p.player.email}).join(', ')  +'</li>';
   }).join('');
   document.getElementById("game-list").innerHTML = htmlList;
 }
-
 function updateViewLBoard(data) {
   var htmlList = data.map(function (score) {
-      return  '<tr><td>' + score.name + '</td>'
-              + '<td>' + score.score.total + '</td>'
-              + '<td>' + score.score.won + '</td>'
-              + '<td>' + score.score.lost + '</td>'
-              + '<td>' + score.score.tied + '</td></tr>';
+      return  '<tr><td>' + score.email + '</td>'
+              + '<td>' + score.total + '</td>'
+              + '<td>' + score.won + '</td>'
+              + '<td>' + score.lost + '</td>'
+              + '<td>' + score.tie + '</td></tr>';
   }).join('');
   document.getElementById("leader-list").innerHTML = htmlList;
 }
-
 function loadData() {
   $.get("/api/games")
     .done(function(data) {

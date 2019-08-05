@@ -1,9 +1,12 @@
 package com.salvo.SalvoApplication;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -27,12 +30,42 @@ public class SalvoController {
     private SalvoRepository salvoRepository;
 
     @Autowired
-    private ScoreRepository scoreRepositry;
+    private ScoreRepository scoreRepository;
+
+    @Autowired
+    private PlayerRepository playerRepository;
 
     ///////////// ENDPOINTS
 
     // Endpoint /api/games 
     @RequestMapping("/games")
+    public Map<String,Object> getLoggedPlayer(Authentication authentication){
+        Map<String,Object> dto = new LinkedHashMap<>();
+        authentication =  SecurityContextHolder.getContext().getAuthentication();
+        Player authenticatedPlayer = getAuthentication(authentication);
+        if(authenticatedPlayer == null)
+            dto.put("player", "GUEST");
+        else
+            dto.put("player",loggedPlayerDTO(authenticatedPlayer));
+        dto.put("games", getAll()); // Invoca al método que nos devuelve todos los juegos
+        return dto;
+    }
+
+    private Player getAuthentication(Authentication authentication){
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            return null;
+        } else {
+            return (playerRepository.findByUserName(authentication.getName()));
+        }
+    }
+
+    public Map<String,Object> loggedPlayerDTO(Player player){
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id", player.getId());
+        dto.put("name",player.getUserName());
+        return dto;
+    }
+
     public List<Object> getAll() {
         return gameRepository.findAll()
                 .stream() // Método de String que gestiona el array y nos brinda métodos como .map y .collect
@@ -40,13 +73,26 @@ public class SalvoController {
                 .collect(Collectors.toList());
     }
 
+    @RequestMapping(path ="/players", method = RequestMethod.POST)
+    public ResponseEntity<String> createUser(@RequestParam String userName, @RequestParam String password){
+        if (userName.isEmpty()) {
+            return new ResponseEntity<>("No username given", HttpStatus.FORBIDDEN);
+        }
+        Player newPlayer = playerRepository.findByUserName(userName);
+        if (newPlayer != null) {
+            return new ResponseEntity<>("Username already exists", HttpStatus.FORBIDDEN);
+        }
+
+        playerRepository.save(new Player(userName, password));
+        return new ResponseEntity<>("Player added", HttpStatus.CREATED);
+    }
+
+
     // Endpoint /api/game_view/nn
     @RequestMapping("/game_view/{gamePlayerId}")
     public Map<String, Object> getGameView(@PathVariable Long gamePlayerId) {
         GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
-        //if (gamePlayer != null) {
             return gameViewDTO(gamePlayer.getGame(), gamePlayer);
-        //}
     }
 
     // Endpoint /api/ships_view
@@ -59,13 +105,13 @@ public class SalvoController {
 	}
 
 	// Endpoint /api/leaderBoard
-	@RequestMapping("/leaderBoard")
+	/*@RequestMapping("/leaderBoard")
     public List<Map<String, Object>> getLeaderBoard() {
-        return scoreRepositry.findAll()
+        return scoreRepository.findAll()
                 .stream()
-                .map(score -> scoreDTO(score))
+                .map(player -> scoreDTO(player))
                 .collect(Collectors.toList());
-    }
+    }*/
 
     ///////////// GAME
 
@@ -172,16 +218,14 @@ public class SalvoController {
 
     ///////////// SCORE
 
-    // Mapeo Score
     private Map<String, Object> scoreDTO(Player player) {
         Map<String, Object> scoreDTO = new LinkedHashMap<>();
         List<GamePlayer> gamePlayerList = player.getGamePlayers();
         List<Score> scoresList = player.getScores();
 
         scoreDTO.put("playerId", player.getId());
-        scoreDTO.put("score", scoresList);
-        //scoreDTO.put("totalScore", getTotalScore;
-        //scoreDTO.put("wins", getWins(score.getPlayer()));
+        scoreDTO.put("player", player.getUserName());
+        scoreDTO.put("totalScore", getAllScore(scoresList));
         scoreDTO.put("finishDate", LocalDateTime.now());
         return scoreDTO;
     }
@@ -191,28 +235,5 @@ public class SalvoController {
         return scoreList.stream()
                 .map(score -> score.getScore())
                 .collect(Collectors.toList());
-    }
-
-    ///////////// MÉTODOS SCORE
-
-    public double getWins(Player player) {
-        double win = 1;
-        return ++win;
-    }
-
-    public double getLosses(Player player) {
-        double loss = 0;
-        return ++loss;
-    }
-
-    public double getTies(Player player) {
-        double tie = 0.5;
-        return ++tie;
-    }
-
-    public double getTotalScore(Player player) {
-        double totalScore;
-        totalScore = getWins(player) + getLosses(player) + getTies(player);
-        return totalScore;
     }
 }
