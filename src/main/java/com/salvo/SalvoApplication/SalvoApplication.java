@@ -72,21 +72,10 @@ public class SalvoApplication {
 			String shipType3 = "Other Ship";
 
 			// Instancias de Ship
-			Ship ship1 = new Ship();
-			ship1.setShipLocations(location1);
-			ship1.setShipType(shipType1);
-
-			Ship ship2 = new Ship();
-			ship2.setShipLocations(location2);
-			ship2.setShipType(shipType2);
-
-			Ship ship3 = new Ship();
-			ship3.setShipLocations(location3);
-			ship3.setShipType(shipType3);
-
-			Ship ship4 = new Ship();
-			ship4.setShipLocations(location1);
-			ship4.setShipType(shipType2);
+			Ship ship1 = new Ship(location1, shipType1);
+			Ship ship2 = new Ship(location2, shipType2);
+			Ship ship3 = new Ship(location3, shipType3);
+			Ship ship4 = new Ship(location1, shipType2);
 
 			// Asignación de Ship para cada gamePlayer
 			gamePlayer1.addShip(ship1);
@@ -116,21 +105,10 @@ public class SalvoApplication {
 			salvoLocation4.add("F2");
 
 			// Instancias de Salvo
-			Salvo salvo1 = new Salvo();
-			salvo1.setTurn(1);
-			salvo1.setSalvoLocations(salvoLocation1);
-
-			Salvo salvo2 = new Salvo();
-			salvo2.setTurn(2);
-			salvo2.setSalvoLocations(salvoLocation2);
-
-			Salvo salvo3 = new Salvo();
-			salvo3.setTurn(3);
-			salvo3.setSalvoLocations(salvoLocation3);
-
-			Salvo salvo4 = new Salvo();
-			salvo4.setTurn(4);
-			salvo4.setSalvoLocations(salvoLocation4);
+			Salvo salvo1 = new Salvo(1, salvoLocation1);
+			Salvo salvo2 = new Salvo(2, salvoLocation2);
+			Salvo salvo3 = new Salvo(3, salvoLocation3);
+			Salvo salvo4 = new Salvo(4, salvoLocation4);
 
 			// Asignación de Salvo a cada gamePlayer
 			gamePlayer1.addSalvo(salvo1);
@@ -139,27 +117,11 @@ public class SalvoApplication {
 			gamePlayer2.addSalvo(salvo4);
 
 			// Instancias de Score
-			Score score1 = new Score();
-			score1.setGame(game1);
-			score1.setPlayer(player1);
-			score1.setScore(1.0);
-			score1.setScore(0.5);
-
-			Score score2 = new Score();
-			score2.setGame(game1);
-			score2.setPlayer(player2);
-			score2.setScore(1);
-
-			Score score3 = new Score();
-			score3.setGame(game2);
-			score3.setPlayer(player3);
-			score3.setScore(0.5);
-
-			Score score4 = new Score();
-			score4.setGame(game2);
-			score4.setPlayer(player4);
-			score4.setScore(0);
-
+			Score score1 = new Score(game1, player1, 1.0, LocalDateTime.now());
+			Score score2 = new Score(game1, player2, 1.0, LocalDateTime.now());
+			Score score3 = new Score(game2, player3, 0.5, LocalDateTime.now());
+			Score score4 = new Score(game2, player4, 0, LocalDateTime.now());
+			
 			// Guardado de cada Instancia a su respectivo Repository
 			gameRepository.save(game1);
 			gameRepository.save(game2);
