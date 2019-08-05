@@ -173,23 +173,25 @@ public class SalvoController {
     ///////////// SCORE
 
     // Mapeo Score
-    private Map<String, Object> scoreDTO(Score score) {
+    private Map<String, Object> scoreDTO(Player player) {
         Map<String, Object> scoreDTO = new LinkedHashMap<>();
-        scoreDTO.put("playerId", score.getPlayer().getId());
-        scoreDTO.put("score", score.getPlayer().getScores());
-        scoreDTO.put("totalScore", getTotalScore(score.getPlayer()));
-        scoreDTO.put("wins", getWins(score.getPlayer()));
+        List<GamePlayer> gamePlayerList = player.getGamePlayers();
+        List<Score> scoresList = player.getScores();
+
+        scoreDTO.put("playerId", player.getId());
+        scoreDTO.put("score", scoresList);
+        //scoreDTO.put("totalScore", getTotalScore;
+        //scoreDTO.put("wins", getWins(score.getPlayer()));
         scoreDTO.put("finishDate", LocalDateTime.now());
         return scoreDTO;
     }
 
     // Genero una lista de todos los Scores
-    private List<Map<String, Object>> getAllScore(List<Score> scoreList) {
+    private List<Double> getAllScore(List<Score> scoreList) {
         return scoreList.stream()
-                .map(score -> scoreDTO(score))
+                .map(score -> score.getScore())
                 .collect(Collectors.toList());
     }
-
 
     ///////////// MÉTODOS SCORE
 
