@@ -21,15 +21,15 @@ function createStatsObject() {
       var examine = stats.positioning.find(function(player){ return player.id == app.games[i].players[j].player.id });
         if (examine == undefined) {
           var statsObject = new Object();
-          statsObject.username = app.games[i].players[j].player.userName;
+          statsObject.userName = app.games[i].players[j].player.userName;
           statsObject.id = app.games[i].players[j].player.id;
-          statsObject.score = 0;
-          statsObject.win = 0;
-          statsObject.lose = 0;
-          statsObject.tie = 0;
+          statsObject.total = 0;
+          statsObject.won = 0;
+          statsObject.lost = 0;
+          statsObject.tied = 0;
           stats.positioning.push(statsObject);
    }
-          evaluate(app.games[i].players[j].score, app.games[i].players[j].player.id);
+          evaluate(app.games[i].players[j].player.totalScore, app.games[i].players[j].player.id);
   }
  }
 }
@@ -41,13 +41,13 @@ function evaluate (score, playerId) {
         if (playerId == positioning.id) {
             positioning.score += score;
             if (score == 1.0) {
-               positioning.win += 1
+               positioning.won += 1
             }
             else if (score == 0.0) {
-               positioning.lose += 1
+               positioning.lost += 1
             }
             else if (score == 0.5) {
-               positioning.tie += 1
+               positioning.tied += 1
             }
   }
  })
