@@ -1,0 +1,18 @@
+.ship-piece{
+    background-color: darkslateblue;
+}
+
+.ship-piece-hited{
+    background-color: darkmagenta;
+    color: white;
+}
+
+.salvo{
+    background-color: crimson;
+    color: white;
+}
+
+.board th {
+    min-width: 30px;
+}
+

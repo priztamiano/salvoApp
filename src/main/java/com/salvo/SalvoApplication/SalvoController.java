@@ -105,13 +105,13 @@ public class SalvoController {
 	}
 
 	// Endpoint /api/leaderBoard
-	/*@RequestMapping("/leaderBoard")
+	@RequestMapping("/leaderBoard")
     public List<Map<String, Object>> getLeaderBoard() {
-        return scoreRepository.findAll()
+        return playerRepository.findAll()
                 .stream()
                 .map(player -> scoreDTO(player))
                 .collect(Collectors.toList());
-    }*/
+    }
 
     ///////////// GAME
 
@@ -220,13 +220,11 @@ public class SalvoController {
 
     private Map<String, Object> scoreDTO(Player player) {
         Map<String, Object> scoreDTO = new LinkedHashMap<>();
-        List<GamePlayer> gamePlayerList = player.getGamePlayers();
-        List<Score> scoresList = player.getScores();
-
-        scoreDTO.put("playerId", player.getId());
         scoreDTO.put("player", player.getUserName());
-        scoreDTO.put("totalScore", getAllScore(scoresList));
-        scoreDTO.put("finishDate", LocalDateTime.now());
+        scoreDTO.put("total", player.getTotalScore());
+        scoreDTO.put("won", player.getWon());
+        scoreDTO.put("lost", player.getLost());
+        scoreDTO.put("tied", player.getTied());
         return scoreDTO;
     }
 

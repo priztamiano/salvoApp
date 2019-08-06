@@ -136,13 +136,11 @@ public class SalvoApplication {
 			Score score1 = new Score(game1, player1, 1.0, LocalDateTime.now());
 			Score score2 = new Score(game1, player1, 1.0, LocalDateTime.now());
 			Score score3 = new Score(game1, player2, 0.5, LocalDateTime.now());
-			Score score4 = new Score(game1, player2, 0, LocalDateTime.now());
+			Score score4 = new Score(game1, player2, 0.0, LocalDateTime.now());
 			Score score5 = new Score(game2, player3, 0.5, LocalDateTime.now());
 			Score score6 = new Score(game2, player3, 0.0, LocalDateTime.now());
-			Score score7 = new Score(game2, player4, 1, LocalDateTime.now());
+			Score score7 = new Score(game2, player4, 1.0, LocalDateTime.now());
 			Score score8 = new Score(game2, player4, 0.5, LocalDateTime.now());
-
-
 
 			// Guardado de cada Instancia a su respectivo Repository
 			gameRepository.save(game1);

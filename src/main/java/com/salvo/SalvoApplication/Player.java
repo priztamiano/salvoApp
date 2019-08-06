@@ -70,28 +70,28 @@ public class Player {
     }
 
     ///////////// MÉTODOS SCORE
-    /*public double getWon() {
-
+    public float getWon() {
+        return scores.stream()
+                .filter(score -> score.getScore() == 1)
+                .count();
     }
 
-    public double getLost() {
-
+    public float getLost() {
+        return scores.stream()
+                    .filter(score -> score.getScore() == 0)
+                    .count();
     }
 
-    public double getTied() {
-
+    public float getTied() {
+        return scores.stream()
+                    .filter(score -> score.getScore() == 0.5)
+                    .count();
     }
-    */
 
-    public double getTotalScore() {
-        double totalScore;
 
-        double won = 1;
-        double lost = 0;
-        double tied = 0.5;
-
-        totalScore = won + lost + tied;
-        return totalScore;
+    public float getTotalScore() {
+        float totalScore;
+        return totalScore = getWon() * (float)1.0 + getLost() * (float)0.0 + getTied() * (float) 0.5;
     }
 
 }
