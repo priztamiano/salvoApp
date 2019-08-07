@@ -9,15 +9,32 @@ $(function() {
 });
 
 function updateViewGames(data) {
-  var userTxt = data.player;
+  var userData = data.player;
   var htmlList = data.games.map(function (games) {
-      return  '<li class="list-group-item">' + new Date(games.creationDate).toLocaleString() + ' ' + games.players.map(function(p) { return p.player.userName}).join(', ')  +'</li>';
+      return getGameItem(games,userData);
   }).join('');
   $("#game-list").html(htmlList);
-  if(userTxt!="Guest"){
-    $("#user-info").text('Hello ' + userTxt.name + '!');
+  if(userData!="GUEST"){
+    $("#user-info").text('Hello ' + userData.name + '!');
     showLogin(false);
   }
+}
+
+function getGameItem(gameData, userData){
+    var item = '<li class="list-group-item">'+ new Date(gameData.creationDate).toLocaleString() + ' ' + gameData.players.map(function(p) { return p.player.userName}).join(', ')  +'</li>';
+    var idPlayerInGame = isPlayerInGame(userData.id,gameData);
+    if (idPlayerInGame != -1)
+        item = '<li class="list-group-item"><a href="game_2.html?gp='+ idPlayerInGame + '">'+ new Date(gameData.creationDate).toLocaleString() + ' ' + gameData.players.map(function(p) { return p.player.userName}).join(', ')  +'</a></li>';
+    return item;
+}
+
+function isPlayerInGame(idPlayer,gameData){
+    var isPlayerInGame = -1;
+    gameData.players.forEach(function (game){
+        if(idPlayer === game.player.id)
+            isPlayerInGame = game.id;
+    });
+    return isPlayerInGame;
 }
 
 function updateViewLBoard(data) {
@@ -59,7 +76,8 @@ function login(){
 
 function logout(){
   $.post("/api/logout")
-    .done(function() { 
+    .done(function() {
+      loadData();
       showLogin(true);
     });
 }

@@ -53,10 +53,10 @@ public class SalvoApplication {
 			game1.setCreationDate(date3);
 
 			// Instancias de Player
-			Player player1 = new Player("sarasa@outlook.com", "loremIpsum234");
-			Player player2 = new Player("priz@gmail.com", "kittenS0123");
+			Player player1 = new Player("sarasa@outlook.com", "666");
+			Player player2 = new Player("priz@gmail.com", "666");
 			Player player3 = new Player("12345@gmail.com", "666");
-			Player player4 = new Player("6789@gmail.com", "333");
+			Player player4 = new Player("6789@gmail.com", "666");
 
 			// Instancias de GamePlayer
 			GamePlayer gamePlayer1 = new GamePlayer(game1, player1);
@@ -210,12 +210,12 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/web/css/games.css").permitAll()
 				.antMatchers("/api/games").permitAll()
 				.antMatchers("/api/players").permitAll()
-				.antMatchers("/api/game_view/*").hasAuthority("user")
+				.antMatchers("/api/game_view/*").hasAuthority("USER")
 				.antMatchers("/rest/*").permitAll()
 				.anyRequest().permitAll();
 		http.formLogin()
-				.usernameParameter("userName")
-				.passwordParameter("password")
+				.usernameParameter("name")
+				.passwordParameter("pwd")
 				.loginPage("/api/login");
 		http.logout().logoutUrl("/api/logout");
 		// turn off checking for CSRF tokens

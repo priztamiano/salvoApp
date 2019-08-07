@@ -51,6 +51,7 @@ public class SalvoController {
         return dto;
     }
 
+    // Spring Authentication
     private Player getAuthentication(Authentication authentication){
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
             return null;
@@ -74,22 +75,22 @@ public class SalvoController {
     }
 
     @RequestMapping(path ="/players", method = RequestMethod.POST)
-    public ResponseEntity<String> createUser(@RequestParam String userName, @RequestParam String password){
-        if (userName.isEmpty()) {
+    public ResponseEntity<String> createUser(@RequestParam String name, @RequestParam String pwd){
+        if (name.isEmpty()) {
             return new ResponseEntity<>("No username given", HttpStatus.FORBIDDEN);
         }
-        Player newPlayer = playerRepository.findByUserName(userName);
+        Player newPlayer = playerRepository.findByUserName(name);
         if (newPlayer != null) {
             return new ResponseEntity<>("Username already exists", HttpStatus.FORBIDDEN);
         }
 
-        playerRepository.save(new Player(userName, password));
+        playerRepository.save(new Player(name, pwd));
         return new ResponseEntity<>("Player added", HttpStatus.CREATED);
     }
 
 
     // Endpoint /api/game_view/nn
-    @RequestMapping("/game_view/{gamePlayerId}")
+    @RequestMapping(path = "/game_view/{gamePlayerId}", method = RequestMethod.GET)
     public Map<String, Object> getGameView(@PathVariable Long gamePlayerId) {
         GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
             return gameViewDTO(gamePlayer.getGame(), gamePlayer);
@@ -121,7 +122,7 @@ public class SalvoController {
         dto.put("id", game.getId());
         dto.put("creationDate", Date.from(game.getCreationDate().atZone(ZoneId.systemDefault()).toInstant())); // Método que convierte LocalDateTime a Date
         dto.put("players", getGamePlayersList(game.getGamePlayers()));
-        dto.put("score", getAllScore(game.getScores()));
+        dto.put("score", getPlayerScore(game.getScores()));
         return dto;
     }
 
@@ -229,9 +230,22 @@ public class SalvoController {
     }
 
     // Genero una lista de todos los Scores
-    private List<Double> getAllScore(List<Score> scoreList) {
+    private List<Map<String, Object>> getAllScore(Game game) {
+        List<Map<String, Object>> gameList = new ArrayList<>();
+        return gameList;
+    }
+
+    private List<Map<String, Object>> getPlayerScore(List<Score> scoreList){
         return scoreList.stream()
-                .map(score -> score.getScore())
+                .map(score -> playerScoreDTO(score))
                 .collect(Collectors.toList());
     }
+
+    private Map<String, Object> playerScoreDTO(Score score) {
+        Map<String, Object> playerScoreDTO = new LinkedHashMap<>();
+        playerScoreDTO.put("player", score.getPlayer().getUserName());
+        playerScoreDTO.put("score", score.getScore());
+        playerScoreDTO.put("finishDate", Date.from(score.getFinishDate().atZone(ZoneId.systemDefault()).toInstant()));
+        return playerScoreDTO;
+}
 }
