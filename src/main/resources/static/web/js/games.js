@@ -111,7 +111,7 @@ $('#createGame').on('submit', function (event) {
         .done(function (data) {
             console.log(data);
             console.log("game created");
-            gameViewUrl = "/web/game.html?gp=" + data.gpid;
+            gameViewUrl = "/web/game.html?gp=" + data.gpId;
             $('#gameCreatedSuccess').show("slow").delay(2000).hide("slow");
             setTimeout(
                 function()
@@ -179,7 +179,7 @@ function updateView() {
 function showGamesTable(gamesData) {
         var mytable = $('<table></table>').attr({id: "gamesTable", class: ""});
         var table = "#gamesList tbody";
-        var gpid;
+        var gpId;
         $(table).empty();
         for (var i = 0; i < gamesData.length; i++) {
 
@@ -199,22 +199,22 @@ function showGamesTable(gamesData) {
                 if (gamesData[i].players.length == 2) {
                     $('<td>' + gamesData[i].players[j].player.userName + '</td>').appendTo(row);
                 }
-                if (gamesData[i].players.length == 1 && (data.player == "GUEST" || data.player.id == gamesData[i].players[j].player.id)) {
+                if (gamesData[i].players.length == 1 && (data.player == "GUEST" || data.player.id == gamesData[i].players[j].player.idPlayer)) {
                     $('<td>' + gamesData[i].players[0].player.userName + '</td><td class="yellow500">WAITING FOR PLAYER</td>').appendTo(row);
                 }
-                if (gamesData[i].players.length == 1 && data.player.id != null && data.player.id != gamesData[i].players[j].player.id) {
+                if (gamesData[i].players.length == 1 && data.player.id != null && data.player.id != gamesData[i].players[j].player.idPlayer) {
                     $('<td>' + gamesData[i].players[0].player.userName + '</td><td class="yellow500">WAITING FOR PLAYER</td>').appendTo(row);
                     joinButtonHtml = '<td class="textCenter"><button class="joinGameButton btn btn-info" data-gameid=' + '"' + gamesData[i].id + '"' + '>JOIN GAME</button></td>';
 
                 }
-                if (gamesData[i].players[j].player.id == data.player.id) {
-                    gpid = gamesData[i].players[j].id;
+                if (gamesData[i].players[j].player.idPlayer == data.player.id) {
+                    gpId = gamesData[i].players[j].id;
                     isLoggedPlayer = true;
                 }
             }
 
             if (isLoggedPlayer === true) {
-                var gameUrl = "/web/game.html?gp=" + gpid;
+                var gameUrl = "/web/game.html?gp=" + gpId;
                 $('<td class="textCenter"><a href=' + '"' + gameUrl + '"' + 'class="btn btn-warning" role="button">ENTER GAME</a></td>').appendTo(row);
             } else if (joinButtonHtml !== null){
                 $(joinButtonHtml).appendTo(row);
@@ -232,7 +232,7 @@ function showGamesTable(gamesData) {
             .done(function (data) {
                 console.log(data);
                 console.log("game joined");
-                gameViewUrl = "/web/game_2.html?gp=" + data.game;
+                gameViewUrl = "/web/game.html?gp=" + data.gpId;
                 $('#gameJoinedSuccess').show("slow").delay(2000).hide("slow");
                 setTimeout(
                    function()
@@ -258,10 +258,10 @@ function getPlayers(gamesData) {
 
         for (var i = 0; i < gamesData.length; i++) {
             for (var j = 0; j < gamesData[i].players.length; j++) {
-                if (!playersIds.includes(gamesData[i].players[j].player.id)) {
-                    playersIds.push(gamesData[i].players[j].player.id);
+                if (!playersIds.includes(gamesData[i].players[j].player.idPlayer)) {
+                    playersIds.push(gamesData[i].players[j].player.idPlayer);
                     var playerScoreData = {
-                        "id": gamesData[i].players[j].player.id,
+                        "id": gamesData[i].players[j].player.idPlayer,
                         "email": gamesData[i].players[j].player.userName,
                         "scores": [],
                         "total": 0.0
