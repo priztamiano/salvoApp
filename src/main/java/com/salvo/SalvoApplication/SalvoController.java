@@ -109,10 +109,10 @@ public class SalvoController {
         GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
         if (getAuthentication(authentication) == null) {
             return new ResponseEntity<>(MakeMap("error", "No Player logged in"), HttpStatus.UNAUTHORIZED);
-        } if (gamePlayer.getShips().size() > 0 || gamePlayer.getShips().size() > 5) {
+        }
+        if (gamePlayer.getShips().size() + ships.size() > 5) {
             return new ResponseEntity<>(MakeMap("error", "Ships already placed"), HttpStatus.FORBIDDEN);
         }
-        // Otherwise, the ships should be added to the game player and saved.
         ships.stream()
               .forEach(ship -> {gamePlayer.addShip(ship); ship.setGamePlayer(gamePlayer); shipRepository.save(ship);
               });
