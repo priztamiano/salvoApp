@@ -1,6 +1,6 @@
 //BEWARE OF #P1
  var player1 = "#p1_";
-var player2 = "#p2_";
+ var player2 = "#p2_";
 var gamePlayerData = {};
 var errorMsg;
 var you = "";
@@ -11,8 +11,8 @@ var salvoPositions = [];
 var waitState = false;
 
 
-//refreshGameView(makeUrl());
-postShipLocations(makePostUrl());
+refreshGameView(makeUrl());
+
 
 $('#logoutButton').on('click', function (event) {
     event.preventDefault();
@@ -62,7 +62,7 @@ function refreshGameView(_url) {
         type: 'GET',
         success: function (data) {
             gamePlayerData = data;
-             console.log(gamePlayerData);
+             //console.log(gamePlayerData);
              createTable(player1);
              createTable(player2);
 
@@ -70,19 +70,17 @@ function refreshGameView(_url) {
 
             $('#gameStateBlock').html('<span class="gameStateLabel">TURN: </span><span class="gameStateLabelBig">' + getTurn(gamePlayerData) + '</span><span class="gameStateLabel"> ACTION REQUIRED: </span><span class="gameStateLabelBig">' + gamePlayerData.gameState + '</span>');
 
-            gamePlayerData.gameState = "PLACESHIPS";
-
             console.log("waitState: " + waitState);
 
             if (waitState === false) {
                 showSelf(gamePlayerData);
-              //  makeGameRecordTable(gamePlayerData.hits.opponent, "gameRecordOppTable");
-                //makeGameRecordTable(gamePlayerData.hits.self, "gameRecordSelfTable");
+                makeGameRecordTable(gamePlayerData.hits.opponent, "gameRecordOppTable");
+                makeGameRecordTable(gamePlayerData.hits.self, "gameRecordSelfTable");
             }
 
+            //gamePlayerData.gameState
             if (gamePlayerData.gameState === "PLACESHIPS"){
                 $('#placingShipsBoard').show('puff', 'slow');
-                console.log("wadad");
             }
             if (gamePlayerData.gameState === "WAITINGFOROPP"){
                 $('#battleGrids').show('puff', 'slow');
@@ -120,8 +118,7 @@ function refreshGameView(_url) {
                 setTimeout(
                     function()
                     {
-                        //refreshGameView(makeUrl());
-                        postShipLocations(makePostUrl());
+                        refreshGameView(makeUrl());
                         console.log("...refreshing gameview...");
 
                     }, 5000);
@@ -175,7 +172,7 @@ function showSelf (gamePlayerData) {
     youID = "";
     console.log(gamePlayerData);
 
-    gamePlayerData.gamePlayers.forEach(function(gamePlayer) {
+    gamePlayerData.gamePlayer.forEach(function(gamePlayer) {
         if (gamePlayer.id == getParameterByName("gp")) {
             you = gamePlayer.player.userName;
             youID = gamePlayer.player.id;
@@ -190,9 +187,9 @@ function showSelf (gamePlayerData) {
         $('#OpponentPlayerName').addClass('waitingPlayer');
     }
 
-    var DateCreated = new Date(gamePlayerData.creationDate);
+    var DateCreated = new Date(gamePlayerData.created);
     DateCreated = DateCreated.getMonth() + 1 + "/" + DateCreated.getDate() + " " + DateCreated.getHours() + ":" + DateCreated.getMinutes();
-    $('#gamePlayerDetails').html('<span class="labelGame">Game ID: </span><span class="labelGameBig">' + gamePlayerData.idGame + '</span><span class="labelGame"> Created: </span><span class="labelGameBig">' + DateCreated + '</span>');
+    $('#gamePlayerDetails').html('<span class="labelGame">Game ID: </span><span class="labelGameBig">' + gamePlayerData.id + '</span><span class="labelGame"> Created: </span><span class="labelGameBig">' + DateCreated + '</span>');
     $('#currentPlayerName').text(you);
     $('#OpponentPlayerName').text(viewer);
 
@@ -240,14 +237,12 @@ function showSelf (gamePlayerData) {
         });
     });
 
-    //Turno
-/*
     gamePlayerData.hits.opponent.forEach(function(playTurn) {
         playTurn.hitLocations.forEach(function (hitCell) {
             cellID = "#" + hitCell;
             $(cellID).addClass("hitCell");
         });
-    });*/
+    });
 }
 
 function createTable(player) {
@@ -300,9 +295,7 @@ function createTable(player) {
 function postShipLocations (postUrl) {
     $.post({
         url: postUrl,
-        //data: shipsJSON,
-        data: JSON.stringify([{shipType: "destroyer", shipLocations: ["A1", "A2", "A3"]},
-        {shipType: "destroyer", shipLocations: ["A1", "A2", "A3"]}]),
+        data: shipsJSON,
         dataType: "text",
         contentType: "application/json"
     })
@@ -314,8 +307,7 @@ function postShipLocations (postUrl) {
                 function()
                 {
                     $('#placingShipsBoard').hide("slow");
-                    //refreshGameView(makeUrl());
-                    postShipLocations(makePostUrl());
+                    refreshGameView(makeUrl());
 
                 }, 4000);
 
@@ -346,8 +338,7 @@ function postSalvo (postUrl) {
             setTimeout(
                 function()
                 {
-                    //refreshGameView(makeUrl());
-                    postShipLocations(makePostUrl());
+                    refreshGameView(makeUrl());
                 }, 4000);
         })
         .fail(function (response) {
@@ -491,19 +482,13 @@ function addDamagesIcons (numberOfHits, hitOrMissed) {
     return damagesIcons;
 }
 
-
 function getTurn(gamePlayerData) {
     var turn;
-
-    turn = gamePlayerData.salvoes.length;
-    /*
-
-
     if (gamePlayerData.hits.self.length < gamePlayerData.hits.opponent.length) {
         turn = gamePlayerData.hits.opponent.length;
     } else {
         turn = gamePlayerData.hits.opponent.length + 1;
-    }*/
+    }
     return turn;
 }
 

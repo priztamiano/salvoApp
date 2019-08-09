@@ -103,6 +103,22 @@ public class SalvoController {
         return new ResponseEntity<>(MakeMap("gpId", gamePlayer.getId()), HttpStatus.CREATED);
     }
 
+    @RequestMapping(path = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> setShips(Authentication authentication, @PathVariable Long gamePlayerId,
+                                                           @RequestBody List<Ship> ships) {
+        GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
+        if (getAuthentication(authentication) == null) {
+            return new ResponseEntity<>(MakeMap("error", "No Player logged in"), HttpStatus.UNAUTHORIZED);
+        } if (gamePlayer.getShips().size() > 0 || gamePlayer.getShips().size() > 5) {
+            return new ResponseEntity<>(MakeMap("error", "Ships already placed"), HttpStatus.FORBIDDEN);
+        }
+        // Otherwise, the ships should be added to the game player and saved.
+        ships.stream()
+              .forEach(ship -> {gamePlayer.addShip(ship); ship.setGamePlayer(gamePlayer); shipRepository.save(ship);
+              });
+        return new ResponseEntity<>(MakeMap("created", "Ships added and saved"), HttpStatus.CREATED);
+    }
+
     @RequestMapping(path ="/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> createUser(@RequestParam String name, @RequestParam String pwd){
         if (name.isEmpty()) {

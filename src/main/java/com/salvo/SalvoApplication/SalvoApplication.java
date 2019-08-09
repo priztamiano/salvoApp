@@ -83,15 +83,17 @@ public class SalvoApplication {
 			location3.add("C4");
 
 			// Asignación de ShipTypes
-			String shipType1 = "Submarine";
-			String shipType2 = "Boat";
-			String shipType3 = "Other Ship";
+			String shipType1 = "Aircraft Carrier";
+			String shipType2 = "Battleship";
+			String shipType3 = "Submarine";
+			String shipType4 = "Destroyer";
+			String shipType5 = "Patrol Boat";
 
 			// Instancias de Ship
 			Ship ship1 = new Ship(location1, shipType1);
 			Ship ship2 = new Ship(location2, shipType2);
 			Ship ship3 = new Ship(location3, shipType3);
-			Ship ship4 = new Ship(location1, shipType2);
+			Ship ship4 = new Ship(location1, shipType4);
 
 			// Asignación de Ship para cada gamePlayer
 			gamePlayer1.addShip(ship1);
@@ -206,9 +208,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers("/web/games.html").permitAll()
-				.antMatchers("/web/css/games.css").permitAll()
-				.antMatchers("/api/games").permitAll()
+				.antMatchers("/web/**").permitAll()
+				.antMatchers("/api/games/**").permitAll()
 				.antMatchers("/api/players").permitAll()
 				.antMatchers("/api/game_view/*").hasAuthority("USER")
 				.antMatchers("/rest/*").permitAll()

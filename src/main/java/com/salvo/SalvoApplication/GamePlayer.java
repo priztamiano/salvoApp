@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity
 public class GamePlayer {
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
