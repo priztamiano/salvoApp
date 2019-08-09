@@ -330,7 +330,9 @@ function postShipLocations (postUrl) {
 function postSalvo (postUrl) {
     $.post({
         url: postUrl,
-        data: salvoJSON,
+        //data: shipsJSON,
+        data: JSON.stringify([{turn: 1, salvoLocations: ["A1", "A2", "A3"]},
+            {turn: 2, salvoLocations: ["A1", "A2", "A3"]}]),
         dataType: "text",
         contentType: "application/json"
     })
