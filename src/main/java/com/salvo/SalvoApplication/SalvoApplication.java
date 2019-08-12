@@ -124,9 +124,9 @@ public class SalvoApplication {
 
 			// Instancias de Salvo
 			Salvo salvo1 = new Salvo(1, salvoLocation1);
-			Salvo salvo2 = new Salvo(2, salvoLocation2);
-			Salvo salvo3 = new Salvo(3, salvoLocation3);
-			Salvo salvo4 = new Salvo(4, salvoLocation4);
+			Salvo salvo2 = new Salvo(1, salvoLocation2);
+			Salvo salvo3 = new Salvo(2, salvoLocation3);
+			Salvo salvo4 = new Salvo(2, salvoLocation4);
 
 			// Asignación de Salvo a cada gamePlayer
 			gamePlayer1.addSalvo(salvo1);
@@ -207,6 +207,7 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		http.headers().frameOptions().disable();
 		http.authorizeRequests()
 				.antMatchers("/web/**").permitAll()
 				.antMatchers("/api/games/**").permitAll()

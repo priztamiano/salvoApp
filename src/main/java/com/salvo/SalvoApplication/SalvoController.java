@@ -111,6 +111,7 @@ public class SalvoController {
             return new ResponseEntity<>(MakeMap("error", "No Player logged in"), HttpStatus.UNAUTHORIZED);
         }
         if (gamePlayer.getShips().size() + ships.size() > 5) {
+                //gamePlayer.getShips().size() != 0 || ships.size() > 5 || gamePlayer.getShips().size() + ships.size() > 5) {
             return new ResponseEntity<>(MakeMap("error", "Ships already placed"), HttpStatus.FORBIDDEN);
         }
         ships.stream()
@@ -119,20 +120,30 @@ public class SalvoController {
         return new ResponseEntity<>(MakeMap("created", "Ships added and saved"), HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/games/players/{gamePlayerId}/salvos", method = RequestMethod.POST)
+    @RequestMapping(value = "/games/players/{gamePlayerId}/salvoes", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> setSalvoes(Authentication authentication, @PathVariable Long gamePlayerId,
-                                                          @RequestBody List<Salvo> salvos) {
+                                                          @RequestBody Salvo salvo) {
         GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
-        if (getAuthentication(authentication) == null || gamePlayerId != gamePlayer.getId()) {
+        if (getAuthentication(authentication) == null || gamePlayerId != gamePlayer.getId() || gamePlayer == null) {
             return new ResponseEntity<>(MakeMap("error", "No Player logged in"), HttpStatus.UNAUTHORIZED);
         }
-        /*salvos.stream()
-                .forEach(salvo -> {});
-        if () {
-            return new ResponseEntity<>(MakeMap("error", "Already submitted a salvo"), HttpStatus.FORBIDDEN);
+        if (gamePlayer.getPlayer() != getAuthentication(authentication)) {
+            return new ResponseEntity<>(MakeMap("error", "Not your game"), HttpStatus.UNAUTHORIZED);
         }
 
-         */
+        long compareTurn = gamePlayer.getSalvo().stream()
+                                                .filter(aSalvo -> salvo.getTurn() == aSalvo.getTurn()).count();
+
+        if (compareTurn == 1) {
+            return new ResponseEntity<>(MakeMap("error", "Already submitted a salvo"), HttpStatus.FORBIDDEN);
+        } else {
+            Salvo salvoNew = new Salvo();
+            salvoNew.setTurn(salvo.getTurn());
+            salvoNew.setGamePlayer(gamePlayer);
+            salvoNew.setSalvoLocations(salvo.getSalvoLocations());
+            salvoRepository.save(salvoNew);
+            gamePlayer.addSalvo(salvoNew);
+        }
         return new ResponseEntity<>(MakeMap("created", "Created salvo"), HttpStatus.CREATED);
     }
 
@@ -326,12 +337,14 @@ public class SalvoController {
         return gameList;
     }
 
+    // Método que trae el Player Score
     private List<Map<String, Object>> getPlayerScore(List<Score> scoreList){
         return scoreList.stream()
                 .map(score -> playerScoreDTO(score))
                 .collect(Collectors.toList());
     }
 
+    // Player Score to DTO
     private Map<String, Object> playerScoreDTO(Score score) {
         Map<String, Object> playerScoreDTO = new LinkedHashMap<>();
         playerScoreDTO.put("playerId", score.getPlayer().getId());
@@ -339,5 +352,25 @@ public class SalvoController {
         playerScoreDTO.put("score", score.getScore());
         playerScoreDTO.put("finishDate", Date.from(score.getFinishDate().atZone(ZoneId.systemDefault()).toInstant()));
         return playerScoreDTO;
-}
+    }
+
+
+    private List<String> getHitsList(Ship ship, Salvo salvo) {
+        List<String> shipLocations = ship.getShipLocations();
+        List<String> salvoLocations = salvo.getSalvoLocations();
+
+        List<String> hitLocations = shipLocations.stream()
+                                    .filter(location -> salvoLocations.contains(location))
+                                    .collect(Collectors.toList());
+
+        return hitLocations;
+    }
+
+    /*
+    private Map<String, Object> hitsDTO(GamePlayer gamePlayer) {
+        Map<String, Object> hitsDTO = new LinkedHashMap();
+        hitsDTO.put("self", getHitsList(gamePlayer.getShips(), ));
+    }
+
+     */
 }

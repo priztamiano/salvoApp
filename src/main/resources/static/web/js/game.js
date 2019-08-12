@@ -13,6 +13,7 @@ var waitState = false;
 
 //refreshGameView(makeUrl());
 postShipLocations(makePostUrl());
+postSalvo(makePostUrlSalvoes());
 
 $('#logoutButton').on('click', function (event) {
     event.preventDefault();
@@ -117,14 +118,16 @@ function refreshGameView(_url) {
                 $('#salvoBlock').hide('puff', 'slow');
                 $('#gameRecordBlock').show('puff', 'slow');
                 waitState = true;
-                setTimeout(
+                /*setTimeout(
                     function()
                     {
                         //refreshGameView(makeUrl());
                         postShipLocations(makePostUrl());
+                        postSalvo (makePostUrl());
                         console.log("...refreshing gameview...");
 
                     }, 5000);
+                    */
             }
             if (gamePlayerData.gameState == "PLAY"){
                 showSelf(gamePlayerData);
@@ -310,14 +313,16 @@ function postShipLocations (postUrl) {
             console.log(response);
             $('#okShips').text(JSON.parse(response).OK);
             $('#okShips').show( "slow" ).delay(3000).hide( "slow" );
-            setTimeout(
+            /*setTimeout(
                 function()
                 {
                     $('#placingShipsBoard').hide("slow");
                     //refreshGameView(makeUrl());
                     postShipLocations(makePostUrl());
+                    postSalvo (makePostUrl());
 
                 }, 4000);
+                */
 
         })
         .fail(function (response) {
@@ -331,8 +336,7 @@ function postSalvo (postUrl) {
     $.post({
         url: postUrl,
         //data: shipsJSON,
-        data: JSON.stringify([{turn: 1, salvoLocations: ["A1", "A2", "A3"]},
-            {turn: 2, salvoLocations: ["A1", "A2", "A3"]}]),
+        data: JSON.stringify({turn: 3, salvoLocations: ["A1", "A2", "A3"]}),
         dataType: "text",
         contentType: "application/json"
     })
@@ -345,12 +349,15 @@ function postSalvo (postUrl) {
             $('#salvoBlock').empty();
             waitState = false;
 
-            setTimeout(
+            /*setTimeout(
                 function()
                 {
                     //refreshGameView(makeUrl());
                     postShipLocations(makePostUrl());
+                    postSalvo (makePostUrl());
                 }, 4000);
+
+                */
         })
         .fail(function (response) {
             console.log(response);
