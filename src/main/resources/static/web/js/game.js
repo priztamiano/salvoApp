@@ -11,9 +11,9 @@ var salvoPositions = [];
 var waitState = false;
 
 
-//refreshGameView(makeUrl());
-postShipLocations(makePostUrl());
-postSalvo(makePostUrlSalvoes());
+refreshGameView(makeUrl());
+//postShipLocations(makePostUrl());
+//postSalvo(makePostUrlSalvoes());
 
 $('#logoutButton').on('click', function (event) {
     event.preventDefault();
@@ -67,8 +67,6 @@ function refreshGameView(_url) {
              createTable(player1);
              createTable(player2);
 
-
-
             $('#gameStateBlock').html('<span class="gameStateLabel">TURN: </span><span class="gameStateLabelBig">' + getTurn(gamePlayerData) + '</span><span class="gameStateLabel"> ACTION REQUIRED: </span><span class="gameStateLabelBig">' + gamePlayerData.gameState + '</span>');
 
             gamePlayerData.gameState = "PLACESHIPS";
@@ -118,16 +116,16 @@ function refreshGameView(_url) {
                 $('#salvoBlock').hide('puff', 'slow');
                 $('#gameRecordBlock').show('puff', 'slow');
                 waitState = true;
-                /*setTimeout(
+                setTimeout(
                     function()
                     {
-                        //refreshGameView(makeUrl());
-                        postShipLocations(makePostUrl());
-                        postSalvo (makePostUrl());
+                        refreshGameView(makeUrl());
+                        //postShipLocations(makePostUrl());
+                        //postSalvo (makePostUrl());
                         console.log("...refreshing gameview...");
 
                     }, 5000);
-                    */
+
             }
             if (gamePlayerData.gameState == "PLAY"){
                 showSelf(gamePlayerData);
@@ -205,9 +203,9 @@ function showSelf (gamePlayerData) {
         var firstCellID;
         firstCellID = "#p1_" + ship.locations[0];
         if (ship.locations[0].substring(1) === ship.locations[1].substring(1)) {
-            $(firstCellID).html('<img class="shipsImgOnSelfGridVer" src="img/' + ship.type + 'ver.png">');
+            $(firstCellID).html('<img class="shipsImgOnSelfGridVer" src="img/' + ship.shipType + 'ver.png">');
                 } else {
-            $(firstCellID).html('<img class="shipsImgOnSelfGridHor" src="img/' + ship.type + 'hor.png">');
+            $(firstCellID).html('<img class="shipsImgOnSelfGridHor" src="img/' + ship.shipType + 'hor.png">');
         }
         // console.log(ship.type);
         ship.locations.forEach(function(location) {
@@ -313,16 +311,16 @@ function postShipLocations (postUrl) {
             console.log(response);
             $('#okShips').text(JSON.parse(response).OK);
             $('#okShips').show( "slow" ).delay(3000).hide( "slow" );
-            /*setTimeout(
+            setTimeout(
                 function()
                 {
                     $('#placingShipsBoard').hide("slow");
-                    //refreshGameView(makeUrl());
-                    postShipLocations(makePostUrl());
-                    postSalvo (makePostUrl());
+                    refreshGameView(makeUrl());
+                    //postShipLocations(makePostUrl());
+                    //postSalvo (makePostUrl());
 
                 }, 4000);
-                */
+
 
         })
         .fail(function (response) {
@@ -349,15 +347,15 @@ function postSalvo (postUrl) {
             $('#salvoBlock').empty();
             waitState = false;
 
-            /*setTimeout(
+            setTimeout(
                 function()
                 {
-                    //refreshGameView(makeUrl());
-                    postShipLocations(makePostUrl());
-                    postSalvo (makePostUrl());
+                    refreshGameView(makeUrl());
+                    //postShipLocations(makePostUrl());
+                    //postSalvo (makePostUrl());
                 }, 4000);
 
-                */
+
         })
         .fail(function (response) {
             console.log(response);

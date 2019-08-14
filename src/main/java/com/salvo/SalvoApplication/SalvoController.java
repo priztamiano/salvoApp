@@ -271,12 +271,15 @@ public class SalvoController {
         return playerDTO;
     }
 
+    /*
     // Genero una lista de Players
     private List<Object> getPlayersList(List<Player> playersList) {
         return playersList.stream()
                 .map(player -> playerDTO(player))
                 .collect(Collectors.toList());
     }
+
+     */
 
     ///////////// SHIP
 
@@ -333,11 +336,14 @@ public class SalvoController {
         return scoreDTO;
     }
 
+    /*
     // Genero una lista de todos los Scores
     private List<Map<String, Object>> getAllScore(Game game) {
         List<Map<String, Object>> gameList = new ArrayList<>();
         return gameList;
     }
+
+     */
 
     // Método que trae el Player Score
     private List<Map<String, Object>> getPlayerScore(List<Score> scoreList){
@@ -464,7 +470,7 @@ public class SalvoController {
         return listOfMaps;
     }
 
-   public GamePlayer getOpponent(GamePlayer gamePlayer) {
+    public GamePlayer getOpponent(GamePlayer gamePlayer) {
         GamePlayer gpOpponent = gamePlayer.getGame().getGamePlayers().stream()
                                                      .filter(gp -> gp.getId() != gamePlayer.getId())
                                                      .findFirst()
@@ -478,4 +484,58 @@ public class SalvoController {
         hitsDTO.put("opponent", getHits(getOpponent(gamePlayer), gamePlayer));
         return hitsDTO;
     }
+
+
+    public Boolean getIfAllSunk(GamePlayer gamePlayer, GamePlayer opponentGamePlayer) {
+        if (getShipLocation(gamePlayer.getShips()).stream().allMatch(s -> s == getSalvoLocation(opponentGamePlayer.getSalvo()))) {
+            return true;
+        }
+        return false;
+    }
+
+    public enum GameState {
+        WAITINGFOROPP,
+        WAIT,
+        PLAY,
+        PLACESHIPS,
+        WON,
+        LOST,
+        TIE,
+        UNDEFINED
+    }
+
+    private GameState getGameState (GamePlayer player) {
+        if (player.getShips().size() == 0) {
+            return GameState.PLACESHIPS;
+        }
+        if (player.getGame().getGamePlayers().size() == 1){
+            return GameState.WAITINGFOROPP;
+        }
+        if (player.getGame().getGamePlayers().size() == 2) {
+            GamePlayer opponentGp = getOpponent(player);
+            if ((player.getSalvo().size() == opponentGp.getSalvo().size()) && (getIfAllSunk(opponentGp, player)) && (!getIfAllSunk(player, opponentGp))) {
+                return GameState.WON;
+            }
+            if ((player.getSalvo().size() == opponentGp.getSalvo().size()) && (getIfAllSunk(opponentGp, player)) && (getIfAllSunk(player, opponentGp))) {
+                return GameState.TIE;
+            }
+            if ((player.getSalvo().size() == opponentGp.getSalvo().size()) && (!getIfAllSunk(opponentGp, player)) && (getIfAllSunk(player, opponentGp))) {
+                return GameState.LOST;
+            }
+            if ((player.getSalvo().size() == opponentGp.getSalvo().size()) && (player.getId() < opponentGp.getId())) {
+                return GameState.PLAY;
+            }
+            if (player.getSalvo().size() < opponentGp.getSalvo().size()){
+                return GameState.PLAY;
+            }
+            if ((player.getSalvo().size() == opponentGp.getSalvo().size()) && (player.getId() > opponentGp.getId())) {
+                return GameState.WAIT;
+            }
+            if (player.getSalvo().size() > opponentGp.getSalvo().size()){
+                return GameState.WAIT;
+            }
+        }
+        return GameState.UNDEFINED;
+    }
+
 }
