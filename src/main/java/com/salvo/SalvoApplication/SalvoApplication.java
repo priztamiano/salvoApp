@@ -83,11 +83,11 @@ public class SalvoApplication {
 			location3.add("C4");
 
 			// Asignación de ShipTypes
-			String shipType1 = "Aircraft Carrier";
-			String shipType2 = "Battleship";
-			String shipType3 = "Submarine";
-			String shipType4 = "Destroyer";
-			String shipType5 = "Patrol Boat";
+			String shipType1 = "carrier";
+			String shipType2 = "battleship";
+			String shipType3 = "submarine";
+			String shipType4 = "destroyer";
+			String shipType5 = "patrolboat";
 
 			// Instancias de Ship
 			Ship ship1 = new Ship(location1, shipType1);
@@ -104,8 +104,8 @@ public class SalvoApplication {
 			// Asignación de Locaciones Salvo
 			List<String> salvoLocation1 = new ArrayList<>();
 			salvoLocation1.add("A4");
-			salvoLocation1.add("A5");
-			salvoLocation1.add("A6");
+			salvoLocation1.add("C1");
+			salvoLocation1.add("C2");
 
 			List<String> salvoLocation2 = new ArrayList<>();
 			salvoLocation2.add("A1");

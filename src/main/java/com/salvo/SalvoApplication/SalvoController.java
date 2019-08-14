@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/api") // Gestión de rutas
@@ -252,11 +253,9 @@ public class SalvoController {
         dtoGame.put("gamePlayers", getGamePlayersList(game.getGamePlayers()));
         dtoGame.put("ships", getShipLocation(gamePlayer.getShips()));
         dtoGame.put("salvoes", getAllSalvo(game));
-        //dtoGame.put("hits", getHits());
+        dtoGame.put("hits", getHitsDTO(gamePlayer));
         return dtoGame;
     }
-
-
 
     ///////////// PLAYERS
 
@@ -357,9 +356,14 @@ public class SalvoController {
         return playerScoreDTO;
     }
 
-
     private List<Map> getHits(GamePlayer gamePlayer, GamePlayer opponentGamePlayer) {
-        List<String> hitLocations = new ArrayList<>();
+        List<Map> listOfMaps = new ArrayList<>();
+
+        int carrier = 0;
+        int battleship = 0;
+        int submarine = 0;
+        int destroyer = 0;
+        int patrolboat = 0;
 
         // GamePlayer Ships
         List<String> carrierList = new ArrayList<>();
@@ -389,89 +393,89 @@ public class SalvoController {
                     shipLocation.stream().forEach(loc -> patrolboatList.add(loc));
                     break;
             }
+        }
 
-            List<Salvo> opponentSalvoList = opponentGamePlayer.getSalvo();
-            for (Salvo salvo: opponentSalvoList) {
-                List<String> salvoLocation = salvo.getSalvoLocations();
-                for (String location: salvoLocation) {
+        List<Salvo> opponentSalvoList = opponentGamePlayer.getSalvo();
+        for (Salvo salvo: opponentSalvoList) {
+            List<String> hitLocations = new ArrayList<>();
+            List<String> salvoLocation = salvo.getSalvoLocations();
+
+            int carrierHits = 0;
+            int battleshipHits = 0;
+            int submarineHits = 0;
+            int destroyerHits = 0;
+            int patrolboatHits = 0;
+
+            int misses = salvoLocation.size();
+
+            for (String location: salvoLocation) {
                     if (carrierList.contains(location)) {
                         hitLocations.add(location);
+                        carrierHits++;
+                        carrier++;
+                        misses--;
                     }
                     if (battleshipList.contains(location)) {
                         hitLocations.add(location);
+                        battleshipHits++;
+                        battleship++;
+                        misses--;
                     }
                     if (submarineList.contains(location)) {
                         hitLocations.add(location);
+                        submarineHits++;
+                        submarine++;
+                        misses--;
                     }
                     if (destroyerList.contains(location)) {
                         hitLocations.add(location);
+                        destroyerHits++;
+                        destroyer++;
+                        misses--;
                     }
                     if (patrolboatList.contains(location)) {
                         hitLocations.add(location);
+                        patrolboatHits++;
+                        patrolboat++;
+                        misses--;
                     }
-                }
             }
+
+            Map<String, Object> damageDTO = new LinkedHashMap<>();
+            damageDTO.put("carrierHits", carrierHits);
+            damageDTO.put("battleshipHits", battleshipHits);
+            damageDTO.put("submarineHits", submarineHits);
+            damageDTO.put("destroyerHits", destroyerHits);
+            damageDTO.put("patrolboatHits", patrolboatHits);
+            damageDTO.put("carrier", carrier);
+            damageDTO.put("battleship", battleship);
+            damageDTO.put("submarine", submarine);
+            damageDTO.put("destroyer", destroyer);
+            damageDTO.put("patrolboat", patrolboat);
+
+            Map<String, Object> mapHitLocations = new LinkedHashMap<>();
+            mapHitLocations.put("turn", salvo.getTurn());
+            mapHitLocations.put("hitLocations", hitLocations);
+            mapHitLocations.put("damages", damageDTO);
+            mapHitLocations.put("missed", misses);
+
+            listOfMaps.add(mapHitLocations);
         }
-
-        int carrier = 0;
-        int battleship = 0;
-        int submarine = 0;
-        int destroyer = 0;
-        int patrolboat = 0;
-
-
-
-         Map<String, Object> damageDTO = new LinkedHashMap<>();
-            damageDTO.put("carrierHits", carrierList.size());
-            damageDTO.put("battleshipHits", battleshipList.size());
-            damageDTO.put("submarineHits", submarineList.size());
-            damageDTO.put("destroyerHits", destroyerList.size());
-            damageDTO.put("patrolboatHits", patrolboatList.size());
-            /*
-            damageDTO.put("carrier", );
-            damageDTO.put("battleship", );
-            damageDTO.put("submarine", );
-            damageDTO.put("destroyer", );
-            damageDTO.put("patrolboat", );
-
-             */
-
-
+        return listOfMaps;
     }
 
-
-
-    /*
-    // Self info
-    private List<Map<String, Object>> selfDTO(Salvo salvo) {
-        Map<String, Object> selfDTO = new LinkedHashMap<>();
-        selfDTO.put("turn", salvo.getTurn());
-        selfDTO.put("hitLocations", getHits());
-        selfDTO.put("damages", );
-        selfDTO.put("missed", );
-        return selfDTO;
-    }
-
-    private List<Map<String, Object>> opponentDTO(Salvo salvo) {
-        Map<String, Object> opponentDTO = new LinkedHashMap<>();
-        opponentDTO.put("turn", salvo.getTurn());
-        opponentDTO.put("hitLocations", );
-        opponentDTO.put("damages", );
-        opponentDTO.put("missed", );
-        return opponentDTO;
-    }
-
-     */
+   public GamePlayer getOpponent(GamePlayer gamePlayer) {
+        GamePlayer gpOpponent = gamePlayer.getGame().getGamePlayers().stream()
+                                                     .filter(gp -> gp.getId() != gamePlayer.getId())
+                                                     .findFirst()
+                                                     .orElse(null);
+        return gpOpponent;
+   }
 
     private Map<String, Object> getHitsDTO(GamePlayer gamePlayer) {
         Map<String, Object> hitsDTO = new LinkedHashMap();
-        hitsDTO.put("self",);
-        hitsDTO.put("opponent",);
+        hitsDTO.put("self", getHits(gamePlayer, getOpponent(gamePlayer)));
+        hitsDTO.put("opponent", getHits(getOpponent(gamePlayer), gamePlayer));
         return hitsDTO;
     }
-
-
-
-
-
 }
