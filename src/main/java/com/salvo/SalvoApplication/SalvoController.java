@@ -254,6 +254,7 @@ public class SalvoController {
         dtoGame.put("ships", getShipLocation(gamePlayer.getShips()));
         dtoGame.put("salvoes", getAllSalvo(game));
         dtoGame.put("hits", getHitsDTO(gamePlayer));
+        dtoGame.put("gameState", getGameState(gamePlayer));
         return dtoGame;
     }
 
@@ -485,23 +486,11 @@ public class SalvoController {
         return hitsDTO;
     }
 
-
     public Boolean getIfAllSunk(GamePlayer gamePlayer, GamePlayer opponentGamePlayer) {
         if (getShipLocation(gamePlayer.getShips()).stream().allMatch(s -> s == getSalvoLocation(opponentGamePlayer.getSalvo()))) {
             return true;
         }
         return false;
-    }
-
-    public enum GameState {
-        WAITINGFOROPP,
-        WAIT,
-        PLAY,
-        PLACESHIPS,
-        WON,
-        LOST,
-        TIE,
-        UNDEFINED
     }
 
     private GameState getGameState (GamePlayer player) {
@@ -537,5 +526,6 @@ public class SalvoController {
         }
         return GameState.UNDEFINED;
     }
+
 
 }

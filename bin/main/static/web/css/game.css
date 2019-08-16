@@ -1,11 +1,48 @@
 .ship-piece{
-    background-color: darkslateblue;
-}
-
-.ship-piece-hited{
     background-color: darkmagenta;
 }
 
+.ship-piece-hited{
+    background-color: rgba(146, 116, 161, 0.85) ;
+}
+
 .salvo{
-    background-color: crimson;
+    background-color: #23858b;
+}
+
+{
+    padding:0;
+    margin:0;
+    text-align:center;
+    padding-top:1.2%;
+    margin-left:5%;
+    margin-right:5%;
+
+}
+
+th{
+    height:25px;
+    width:25px;
+    color:white;
+    background-color:black;
+}
+
+td{
+    height:25px;
+    width:25px;
+}
+/*
+body{
+    background-image: url(https://pixnio.com/free-images/2017/10/09/2017-10-09-11-47-28-1100x733.jpg
+    https://pixnio.com/free-images/2017/10/09/2017-10-09-11-47-28-1100x733.jpg
+);
+    background-size: cover;
+    background-repeat:none;
+    height:100%;
+    width:100%;
+}*/
+
+#playerInfo{
+    color:black;
+    font-weight:bold;
 }
