@@ -118,7 +118,7 @@ public class SalvoController {
         ships.stream()
               .forEach(ship -> {gamePlayer.addShip(ship); ship.setGamePlayer(gamePlayer); shipRepository.save(ship);
               });
-        return new ResponseEntity<>(MakeMap("created", "Ships added and saved"), HttpStatus.CREATED);
+        return new ResponseEntity<>(MakeMap("OK", "Ships added and saved"), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/games/players/{gamePlayerId}/salvoes", method = RequestMethod.POST)
@@ -138,14 +138,36 @@ public class SalvoController {
         if (compareTurn == 1) {
             return new ResponseEntity<>(MakeMap("error", "Already submitted a salvo"), HttpStatus.FORBIDDEN);
         } else {
-            Salvo salvoNew = new Salvo();
-            salvoNew.setTurn(salvo.getTurn());
-            salvoNew.setGamePlayer(gamePlayer);
-            salvoNew.setSalvoLocations(salvo.getSalvoLocations());
-            salvoRepository.save(salvoNew);
-            gamePlayer.addSalvo(salvoNew);
+            if (getGameState(gamePlayer) != GameState.PLAY) {
+                return new ResponseEntity<>(MakeMap("error", "You can't play at the moment"), HttpStatus.FORBIDDEN);
+            } else {
+                Salvo salvoNew = new Salvo();
+                salvoNew.setTurn(gamePlayer.getSalvo().size() + 1);
+                salvoNew.setGamePlayer(gamePlayer);
+                salvoNew.setSalvoLocations(salvo.getSalvoLocations());
+                salvoRepository.save(salvoNew);
+                gamePlayer.addSalvo(salvoNew);
+                if (getGameState(gamePlayer) == GameState.WON) {
+                    Score win = new Score(gamePlayer.getGame(), gamePlayer.getPlayer(), 1, LocalDateTime.now());
+                    Score lost = new Score(getOpponent(gamePlayer).getGame(), getOpponent(gamePlayer).getPlayer(), 0, LocalDateTime.now());
+                    scoreRepository.save(win);
+                    scoreRepository.save(lost);
+                }
+                if (getGameState(gamePlayer) == GameState.LOST) {
+                    Score lost = new Score(gamePlayer.getGame(), gamePlayer.getPlayer(), 0, LocalDateTime.now());
+                    Score win = new Score(getOpponent(gamePlayer).getGame(), getOpponent(gamePlayer).getPlayer(), 1, LocalDateTime.now());
+                    scoreRepository.save(lost);
+                    scoreRepository.save(win);
+                }
+                if (getGameState(gamePlayer) == GameState.TIE) {
+                    Score tie1 = new Score(gamePlayer.getGame(), gamePlayer.getPlayer(), 0.5, LocalDateTime.now());
+                    Score tie2 = new Score(getOpponent(gamePlayer).getGame(), getOpponent(gamePlayer).getPlayer(), 0.5, LocalDateTime.now());
+                    scoreRepository.save(tie1);
+                    scoreRepository.save(tie2);
+                }
+                return new ResponseEntity<>(MakeMap("OK", "Created salvo"), HttpStatus.CREATED);
+            }
         }
-        return new ResponseEntity<>(MakeMap("created", "Created salvo"), HttpStatus.CREATED);
     }
 
     @RequestMapping(path ="/players", method = RequestMethod.POST)
@@ -472,10 +494,11 @@ public class SalvoController {
     }
 
     public GamePlayer getOpponent(GamePlayer gamePlayer) {
+        GamePlayer newGamePlayer = new GamePlayer();
         GamePlayer gpOpponent = gamePlayer.getGame().getGamePlayers().stream()
                                                      .filter(gp -> gp.getId() != gamePlayer.getId())
                                                      .findFirst()
-                                                     .orElse(null);
+                                                        .orElse(newGamePlayer);
         return gpOpponent;
    }
 
@@ -486,11 +509,27 @@ public class SalvoController {
         return hitsDTO;
     }
 
-    public Boolean getIfAllSunk(GamePlayer gamePlayer, GamePlayer opponentGamePlayer) {
-        if (getShipLocation(gamePlayer.getShips()).stream().allMatch(s -> s == getSalvoLocation(opponentGamePlayer.getSalvo()))) {
-            return true;
+    private boolean getIfAllSunk (GamePlayer gp , GamePlayer oppGP){
+        List<Ship> myShips = gp.getShips();
+        List<Salvo> oppSalvoes = oppGP.getSalvo();
+        int count = 0;
+        for(Ship everyShip : myShips){
+            List<String> shipLoc = everyShip.getShipLocations();
+            for (String i : shipLoc){
+                for (Salvo everySalvo : oppSalvoes){
+                    List<String> salvoLoc = everySalvo.getSalvoLocations();
+                    for (String j : salvoLoc){
+                        if (i == j)
+                            count = count + 1;
+                    }
+                }
+            }
         }
-        return false;
+        if (17 == count){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private GameState getGameState (GamePlayer player) {

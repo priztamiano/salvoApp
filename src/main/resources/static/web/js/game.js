@@ -139,7 +139,7 @@ function refreshGameView(_url) {
                 resetSalvoCellIds();
                 $('#postSalvo').click(function () {
                     makeSalvoJSON();
-                    if (salvoPositions.length != 5){
+                    if (salvoPositions.length > 5){
                         $('#errorSalvo').text("You still have Salvo to fire!");
                         $('#errorSalvo').show( "slow" ).delay(3000).hide( "slow" );
                         console.log("No salvos to shoot!");
@@ -168,11 +168,11 @@ function showSelf (gamePlayerData) {
     youID = "";
     console.log(gamePlayerData);
     gamePlayerData.gamePlayers.forEach(function(gamePlayer) {
-        if (gamePlayer.idGamePlayer == getParameterByName("gp")) {
-            you = gamePlayer.player.email;
-            youID = gamePlayer.player.idPlayer;
+        if (gamePlayer.id == getParameterByName("gp")) {
+            you = gamePlayer.player.userName;
+            youID = gamePlayer.player.id;
         } else {
-            viewer = gamePlayer.player.email;
+            viewer = gamePlayer.player.userName;
             $('#OpponentPlayerName').removeClass('waitingPlayer');
         }
     });
@@ -373,7 +373,7 @@ function makeSalvoJSON() {
         salvoPositions.push(salvo5cellID);
     }
     salvoObject = {
-        locations : salvoPositions
+        salvoLocations : salvoPositions
     }
     salvoJSON = JSON.stringify(salvoObject);
     console.log(salvoJSON);

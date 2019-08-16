@@ -40,6 +40,7 @@ public class SalvoApplication {
 									  ScoreRepository scoreRepository) {
 		return(String... args) -> {
 			// Instancias de Game con su info correspondiente
+			/*
 			Game game1 = new Game();
 			LocalDateTime date1 = LocalDateTime.now();
 			game1.setCreationDate(date1);
@@ -177,8 +178,13 @@ public class SalvoApplication {
 			scoreRepository.save(score6);
 			scoreRepository.save(score7);
 			scoreRepository.save(score8);
+
+			 */
 		};
+
+
 	}
+
 
 }
 
